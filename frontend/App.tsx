@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar} from 'react-native';
+import { Text, View, StatusBar } from 'react-native';
 
 const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
 if (!backendUrl) {
@@ -8,54 +8,50 @@ if (!backendUrl) {
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-      <Text style={styles.title}>SwiftyProtein</Text>
-      <Text style={styles.subtitle}>Aplicación React Native/Expo Lista</Text>
-      <View style={styles.infoBox}>
-        <Text style={styles.infoText}>Conectando a Backend:</Text>
-        <Text style={styles.infoUrl}>{backendUrl}</Text>
+    <View className="flex-1 bg-purple-600 items-center justify-center p-5">
+      <StatusBar barStyle="light-content" />
+
+      {/* Main card */}
+      <View className="bg-white rounded-3xl p-8 w-11/12 shadow-xl">
+
+        {/* Title */}
+        <View className="mb-6">
+          <Text className="text-5xl font-bold text-purple-700 text-center mb-2">
+            SwiftyProtein
+          </Text>
+          <View className="h-1 w-20 bg-pink-500 rounded-full mx-auto" />
+        </View>
+
+        {/* Subtitle */}
+        <Text className="text-lg text-gray-700 text-center mb-8 font-medium">
+          React Native/Expo application with NativeWind
+        </Text>
+
+        {/* Info Box */}
+        <View className="bg-purple-100 rounded-2xl p-6 border-2 border-purple-300">
+          <Text className="text-sm text-purple-800 text-center mb-3 font-semibold">
+            🔗 Conectando a Backend:
+          </Text>
+          <View className="bg-purple-200 rounded-lg p-3">
+            <Text className="text-xs text-purple-900 text-center font-mono">
+              {backendUrl}
+            </Text>
+          </View>
+        </View>
+
+        {/* Status badge */}
+        <View className="mt-6 flex-row justify-center items-center">
+          <View className="w-3 h-3 bg-green-400 rounded-full mr-2" />
+          <Text className="text-gray-700 text-sm font-semibold">
+            NativeWind Active ✨
+          </Text>
+        </View>
       </View>
 
-      {/* ¡Comienza a construir tu LoginView aquí! */}
+      {/* Footer */}
+      <Text className="text-white text-xs mt-8 text-center font-medium">
+        Powered by Tailwind CSS + NativeWind
+      </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 30,
-  },
-  infoBox: {
-    padding: 15,
-    borderRadius: 8,
-    backgroundColor: '#EAEAEA',
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  infoText: {
-    fontSize: 14,
-    color: '#444',
-  },
-  infoUrl: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginTop: 5,
-    color: '#007BFF',
-  }
-});

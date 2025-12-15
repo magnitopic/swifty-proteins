@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
-      - /app/node_modules
     ports:
       # Expo ports
       - "19000:19000"
