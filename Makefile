@@ -49,3 +49,7 @@ install-backend:
 install-frontend:
 	docker compose exec frontend npm install
 
+copy-node_modules:
+	docker compose exec -T backend tar cf - node_modules | tar xf - -C ./backend
+	docker compose exec -T frontend tar cf - node_modules | tar xf - -C ./frontend
+

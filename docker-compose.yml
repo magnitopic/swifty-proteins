@@ -6,6 +6,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./frontend:/app
+      - /app/node_modules
     ports:
       # Expo ports
       - "19000:19000"
@@ -27,6 +28,7 @@ services:
       - "9000:9000"
     volumes:
       - ./backend:/app
+      - /app/node_modules
     env_file:
       - .env
     restart: always
