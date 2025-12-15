@@ -1,0 +1,10 @@
+{
+    "expo": {
+        "name": "swifty-proteins",
+        "slug": "swifty-proteins",
+        "version": "1.0.0",
+        "assetBundlePatterns": [
+            "**/*"
+        ]
+    }
+}

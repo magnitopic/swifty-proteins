@@ -1,0 +1,32 @@
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      # Expo ports
+      - "19000:19000"
+      - "19001:19001"
+      - "19006:19006"
+      - "8081:8081" # Metro Bundler port
+    env_file:
+      - .env
+    working_dir: /app
+    tty: true
+    stdin_open: true
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    restart: always
