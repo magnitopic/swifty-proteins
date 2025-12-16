@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { CustomButton } from '../../components/CustomButton';
+import { Ionicons } from '@expo/vector-icons';
 
 interface LoginScreenProps {
 	onNavigateToRegister?: () => void;
@@ -96,14 +97,15 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 						</View>
 
 						{/* Add fingerprint button */}
-						<View className="px-8">
-							<CustomButton className='mt-4' variant='outline'>
-								Add fingerprint logo
-							</CustomButton>
+						<View className="flex-row justify-center">
+							<TouchableOpacity 
+								className="w-20 h-20 mt-2 rounded-full justify-center items-center">
+								<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />
+							</TouchableOpacity>
 						</View>
 
 						{/* Sign up button */}
-						<View className="flex-row justify-center mt-10 mb-10">
+						<View className="flex-row justify-center mt-6">
 							<Text className="text-gray-500 font-medium">Don't have an account? </Text>
 							<TouchableOpacity onPress={onNavigateToRegister}>
 								<Text className="font-bold text-purple-600">Sign Up</Text>
