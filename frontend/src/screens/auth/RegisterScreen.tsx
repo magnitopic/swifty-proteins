@@ -38,6 +38,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 						showsVerticalScrollIndicator={false}
 					>
 
+						{/* Go back button */}
 						<View className="flex-row justify-start px-8 mt-8">
 							<CustomButton
 								variant='outline'
@@ -57,8 +58,10 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 							</Text>
 						</View>
 
+						{/* Form */}
 						<View className="px-8">
 
+							{/* Full Name input */}
 							<View className="mb-4">
 								<Text className="text-gray-700 font-medium ml-1 mb-1">Full Name</Text>
 								<TextInput
@@ -70,6 +73,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 								/>
 							</View>
 
+							{/* Email input */}
 							<View className="mb-4">
 								<Text className="text-gray-700 font-medium ml-1 mb-1">Email Address</Text>
 								<TextInput
@@ -78,11 +82,11 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 									placeholderTextColor={'gray'}
 									value={email}
 									onChangeText={setEmail}
-									keyboardType="email-address"
 									autoCapitalize="none"
 								/>
 							</View>
 
+							{/* Password input */}
 							<View className="mb-4">
 								<Text className="text-gray-700 font-medium ml-1 mb-1">Password</Text>
 								<TextInput
@@ -95,6 +99,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 								/>
 							</View>
 
+							{/* Sign Up button */}
 							<CustomButton
 							className='mt-2'
 								onPress={() => console.log('Sign Up Pressed')}
@@ -103,6 +108,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 							</CustomButton>
 						</View>
 
+						{/* Already have an account span */}
 						<View className="flex-row justify-center mt-8 mb-10">
 							<Text className="text-gray-500 font-medium">Already have an account? </Text>
 							<TouchableOpacity onPress={onNavigateToLogin}>
