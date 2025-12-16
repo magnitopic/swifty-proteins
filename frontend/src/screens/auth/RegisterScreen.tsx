@@ -6,7 +6,8 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView
+	ScrollView,
+	Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -14,15 +15,57 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Local imports
 import { CustomButton } from '../../components/CustomButton';
+import { register } from '../../services/authService';
 
 interface RegisterScreenProps {
 	onNavigateToLogin?: () => void;
 }
 
 export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps) {
-	const [fullName, setFullName] = useState('');
+	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
+
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleRegister = async () => {
+		// Data validation
+		if (!username || !email || !password) {
+			Alert.alert("Error", "Please fill in all fields");
+			return;
+		}
+
+		try {
+			setIsLoading(true); // Loading state
+
+			// Call to service
+			await register({
+				username: username,
+				email: email,
+				password: password
+			});
+
+			// Success
+			Alert.alert(
+				"Created account!",
+				"Your account has been registered successfully. Please log in.",
+				[
+					{ text: "OK", onPress: () => onNavigateToLogin?.() } // Navigate to login on OK
+				]
+			);
+
+		} catch (error: any) {
+			// Error handling with detailed logging
+			console.log('Registration error:', error);
+			console.log('Response data:', error.response?.data);
+			console.log('Response status:', error.response?.status);
+
+			const message = error.response?.data?.message || "An unexpected error occurred";
+			Alert.alert("Error", message);
+		} finally {
+			setIsLoading(false); // End loading state
+		}
+	};
 
 	return (
 		<View className="flex-1 bg-white">
@@ -44,6 +87,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 								variant='outline'
 								className="rounded-full py-1 flex flex-row items-center"
 								onPress={onNavigateToLogin}
+								disabled={isLoading}
 							>
 								<View className="flex-row items-center">
 									<Ionicons name="return-up-back" size={24} color="#9333EA" />
@@ -63,13 +107,14 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 
 							{/* Full Name input */}
 							<View className="mb-4">
-								<Text className="text-gray-700 font-medium ml-1 mb-1">Full Name</Text>
+								<Text className="text-gray-700 font-medium ml-1 mb-1">Username</Text>
 								<TextInput
 									className="p-4 bg-gray-50 text-gray-700 rounded-2xl border border-gray-200 w-full"
-									placeholder="John Doe"
+									placeholder="JohnDoe42"
 									placeholderTextColor={'gray'}
-									value={fullName}
-									onChangeText={setFullName}
+									value={username}
+									onChangeText={setUsername}
+									editable={!isLoading}
 								/>
 							</View>
 
@@ -83,6 +128,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 									value={email}
 									onChangeText={setEmail}
 									autoCapitalize="none"
+									editable={!isLoading}
 								/>
 							</View>
 
@@ -96,13 +142,15 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 									value={password}
 									onChangeText={setPassword}
 									secureTextEntry
+									editable={!isLoading}
 								/>
 							</View>
 
 							{/* Sign Up button */}
 							<CustomButton
-							className='mt-2'
-								onPress={() => console.log('Sign Up Pressed')}
+								className='mt-2'
+								onPress={handleRegister}
+								disabled={isLoading}
 							>
 								Sign Up
 							</CustomButton>
