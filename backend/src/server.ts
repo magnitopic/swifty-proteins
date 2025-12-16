@@ -1,9 +1,12 @@
+// IMPORTANT: Load environment variables first
+import { config } from './config/env';
+
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import pool, { query } from './db';
+import pool, { query } from './config/db';
 
 const app = express();
-const PORT = process.env.BACKEND_PORT || 9000;
+const PORT = config.server.port;
 
 // Middleware
 app.use(cors());
@@ -25,7 +28,7 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
   res.status(200).send({
     message: 'SwiftyProtein Backend Service is running!',
-    environment: process.env.NODE_ENV || 'development',
+    environment: config.server.nodeEnv,
     status: 'Ready for client requests'
   });
 });
@@ -49,6 +52,7 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
 
 app.listen(PORT, () => {
   console.log(`\n✅ Server is running on port ${PORT}`);
-  console.log('URL is: ', process.env.EXPO_PUBLIC_BACKEND_URL);
+  console.log(`📡 Backend URL: ${config.server.backendUrl}`);
+  console.log(`🌍 Environment: ${config.server.nodeEnv}`);
   console.log('------------------------------------------');
 });
