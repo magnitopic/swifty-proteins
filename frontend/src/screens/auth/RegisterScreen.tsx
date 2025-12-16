@@ -10,6 +10,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { Ionicons } from '@expo/vector-icons';
+
+// Local imports
 import { CustomButton } from '../../components/CustomButton';
 
 interface RegisterScreenProps {
@@ -38,10 +41,13 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 						<View className="flex-row justify-start px-8 mt-8">
 							<CustomButton
 								variant='outline'
-								className="rounded-full py-1"
+								className="rounded-full py-1 flex flex-row items-center"
 								onPress={onNavigateToLogin}
 							>
-								← Back
+								<View className="flex-row items-center">
+									<Ionicons name="return-up-back" size={24} color="#9333EA" />
+									<Text className="font-bold text-purple-600 ml-2">Go Back</Text>
+								</View>
 							</CustomButton>
 						</View>
 
