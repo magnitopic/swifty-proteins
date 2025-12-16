@@ -1,8 +1,13 @@
 import { Router } from 'express';
+
+// Local imports
 import { registerController, loginController, refreshTokenController }
     from '../controllers/authController';
 
-import { validateRegisterCredentials, validateLoginCredentials, validateRefreshToken } from '../middleware/validateCredentials';
+import { validateRegisterCredentials, validateLoginCredentials } 
+    from '../middleware/validateCredentials';
+
+import { validateRefreshToken } from '../middleware/authMiddleware';
 
 const router = Router();
 

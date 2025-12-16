@@ -24,13 +24,13 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
     }
 
     // Generate Access Token (short-lived)
-    const accessTokenOptions: any = {
-        expiresIn: config.jwt.accessExpiration
+    const accessTokenOptions: SignOptions = {
+        expiresIn: config.jwt.accessExpiration as SignOptions['expiresIn']
     };
 
     const accessToken = jwt.sign(
         {
-            _id: user.id,
+            id: user.id,
             username: user.username,
             email: user.email
         },
@@ -39,13 +39,13 @@ export const loginUser = async (credentials: LoginCredentials): Promise<LoginRes
     );
 
     // Generate Refresh Token (long-lived)
-    const refreshTokenOptions: any = {
-        expiresIn: config.jwt.refreshExpiration
+    const refreshTokenOptions: SignOptions = {
+        expiresIn: config.jwt.refreshExpiration as SignOptions['expiresIn']
     };
 
     const refreshToken = jwt.sign(
         {
-            _id: user.id,
+            id: user.id,
             username: user.username,
             email: user.email
         },

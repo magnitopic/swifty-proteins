@@ -1,9 +1,10 @@
-// IMPORTANT: Load environment variables first
-import { config } from './config/env';
-
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+
+// Local imports
+import { config } from './config/env';
 import pool, { query } from './config/db';
+import router from './routes';
 
 const app = express();
 const PORT = config.server.port;
@@ -33,20 +34,7 @@ app.get('/', (req: Request, res: Response) => {
   });
 });
 
-// Login route
-app.post('/api/auth/login', (req: Request, res: Response) => {
-  console.log('Login attempt received:', req.body);
-
-  if (req.body.username && req.body.password) {
-    return res.status(200).send({
-      success: true,
-      message: 'Login simulation successful',
-      token: 'mock-jwt-token'
-    });
-  }
-
-  res.status(401).send({ success: false, message: 'Missing username or password' });
-});
+app.use('/api/v1', router);
 
 // --- Server start ---
 

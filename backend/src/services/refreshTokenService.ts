@@ -29,7 +29,7 @@ export const refreshAccessToken = async (request: RefreshTokenRequest): Promise<
 
         const accessToken = jwt.sign(
             {
-                _id: user.id,
+                id: user.id,
                 username: user.username,
                 email: user.email
             },

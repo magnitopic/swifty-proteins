@@ -39,22 +39,3 @@ export const validateLoginCredentials =
             });
         }
     }
-
-export const validateRefreshToken =
-    (req: Request, res: Response, next: NextFunction) => {
-        try {
-            refreshTokenSchema.parse(req.body);
-            return next();
-        } catch (error) {
-            if (error instanceof ZodError) {
-                const errorMessages = error.errors.map(err => err.message);
-                return res.status(400).json({
-                    message: errorMessages[0],
-                    errors: errorMessages
-                });
-            }
-            return res.status(500).json({
-                message: 'Validation error.'
-            });
-        }
-    }

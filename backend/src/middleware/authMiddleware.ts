@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/env';
+import { refreshTokenSchema } from '../schemas/authSchemas';
+import { ZodError } from 'zod';
 
 // Extend Request interface to include user property
 export interface AuthRequest extends Request {
@@ -29,3 +31,23 @@ export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunct
         next();
     });
 };
+
+
+export const validateRefreshToken =
+    (req: Request, res: Response, next: NextFunction) => {
+        try {
+            refreshTokenSchema.parse(req.body);
+            return next();
+        } catch (error) {
+            if (error instanceof ZodError) {
+                const errorMessages = error.errors.map(err => err.message);
+                return res.status(400).json({
+                    message: errorMessages[0],
+                    errors: errorMessages
+                });
+            }
+            return res.status(500).json({
+                message: 'Validation error.'
+            });
+        }
+    }
