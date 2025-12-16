@@ -16,7 +16,7 @@ export const validateRegisterCredentials =
                 });
             }
             return res.status(500).json({
-                message: 'Error de validación.'
+                message: 'Validation error.'
             });
         }
     }
@@ -35,7 +35,7 @@ export const validateLoginCredentials =
                 });
             }
             return res.status(500).json({
-                message: 'Error de validación.'
+                message: 'Validation error.'
             });
         }
     }

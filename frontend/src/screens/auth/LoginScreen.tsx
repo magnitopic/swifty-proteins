@@ -6,20 +6,58 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView
+	ScrollView,
+	Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { CustomButton } from '../../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
+import { login } from '../../services';
 
 interface LoginScreenProps {
 	onNavigateToRegister?: () => void;
 }
 
 export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
-	const [email, setEmail] = useState('');
+	const [username, setusername] = useState('');
 	const [password, setPassword] = useState('');
+
+	const [isLoading, setIsLoading] = useState(false);
+	
+		const handleLogin = async () => {
+			// Data validation
+			if (!username || !password) {
+				Alert.alert("Error", "Please fill in all fields");
+				return;
+			}
+	
+			try {
+				setIsLoading(true); // Loading state
+	
+				// Call to service
+				await login({
+					username: username,
+					password: password
+				});
+	
+				// Success
+				Alert.alert(
+					"Signed in successfully!",
+					"You have successfully signed in.",
+					[
+						{ text: "OK" } // TODO: navigate home
+					]
+				);
+	
+			} catch (error: any) {
+				const message = error.response?.data?.message || "An unexpected error occurred";
+				Alert.alert("Error", message);
+			} finally {
+				setIsLoading(false); // End loading state
+			}
+		};
+	
 
 	return (
 		<View className="flex-1 bg-white">
@@ -52,17 +90,17 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 
 						{/* Form */}
 						<View className="px-8">
-							{/* Email input */}
+							{/* username input */}
 							<View className="mb-4">
-								<Text className="text-gray-700 font-medium ml-1 mb-1">Email</Text>
+								<Text className="text-gray-700 font-medium ml-1 mb-1">Username</Text>
 								<TextInput
 									className="p-4 bg-gray-50 text-gray-700 rounded-2xl border border-gray-200 w-full"
-									placeholder="example@email.com"
+									placeholder="username42"
 									placeholderTextColor={'gray'}
-									value={email}
-									onChangeText={setEmail}
-									keyboardType="email-address"
+									value={username}
+									onChangeText={setusername}
 									autoCapitalize="none"
+									editable={!isLoading}
 								/>
 							</View>
 							{/* Password input */}
@@ -75,6 +113,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 									value={password}
 									onChangeText={setPassword}
 									secureTextEntry
+									editable={!isLoading}
 								/>
 								<TouchableOpacity className="flex items-end my-1">
 									<Text className="text-purple-600 font-semibold">Forgot your password?</Text>
@@ -83,9 +122,10 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 
 							{/* Sign in button */}
 							<CustomButton
-								onPress={() => console.log('Sign In Pressed')}
+								onPress={handleLogin}
+								disabled={isLoading}
 							>
-								Sign In
+								{ isLoading ? 'Signing in...' : 'Sign In' }
 							</CustomButton>
 						</View>
 

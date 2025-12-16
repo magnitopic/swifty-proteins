@@ -152,7 +152,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 								onPress={handleRegister}
 								disabled={isLoading}
 							>
-								Sign Up
+								{ isLoading ? 'Signing up...' : 'Sign Up' }
 							</CustomButton>
 						</View>
 

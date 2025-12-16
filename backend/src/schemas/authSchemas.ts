@@ -2,34 +2,34 @@ import { z } from 'zod';
 
 export const registerSchema = z.object({
     email: z
-        .string({ required_error: 'El email es requerido.' })
-        .email('Formato de email inválido.')
-        .min(5, 'El email debe tener al menos 5 caracteres.'),
+        .string({ required_error: 'Email is required.' })
+        .email('Invalid email format.')
+        .min(5, 'Email must be at least 5 characters.'),
 
     password: z
-        .string({ required_error: 'La contraseña es requerida.' })
-        .min(6, 'La contraseña debe tener al menos 6 caracteres.')
-        .regex(/[A-Z]/, 'La contraseña debe contener al menos una mayúscula.')
-        .regex(/[a-z]/, 'La contraseña debe contener al menos una minúscula.')
-        .regex(/[0-9]/, 'La contraseña debe contener al menos un número.'),
+        .string({ required_error: 'Password is required.' })
+        .min(6, 'Password must be at least 6 characters.')
+        .regex(/[A-Z]/, 'Password must contain at least one uppercase letter.')
+        .regex(/[a-z]/, 'Password must contain at least one lowercase letter.')
+        .regex(/[0-9]/, 'Password must contain at least one number.'),
 
     username: z
-        .string({ required_error: 'El nombre de usuario es requerido.' })
-        .min(3, 'El nombre de usuario debe tener al menos 3 caracteres.')
-        .max(20, 'El nombre de usuario no puede tener más de 20 caracteres.')
-        .regex(/^[a-zA-Z0-9_-]+$/, 'El nombre de usuario solo puede contener letras, números y guiones.'),
+        .string({ required_error: 'Username is required.' })
+        .min(3, 'Username must be at least 3 characters.')
+        .max(20, 'Username cannot be longer than 20 characters.')
+        .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, and hyphens.'),
 });
 
 export const loginSchema = z.object({
     username: z
-        .string({ required_error: 'El nombre de usuario es requerido.' })
-        .min(3, 'El nombre de usuario debe tener al menos 3 caracteres.')
-        .max(20, 'El nombre de usuario no puede tener más de 20 caracteres.')
-        .regex(/^[a-zA-Z0-9_-]+$/, 'El nombre de usuario solo puede contener letras, números y guiones.'),
+        .string({ required_error: 'Username is required.' })
+        .min(3, 'Username must be at least 3 characters.')
+        .max(20, 'Username cannot be longer than 20 characters.')
+        .regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, and hyphens.'),
 
     password: z
-        .string({ required_error: 'La contraseña es requerida.' })
-        .min(1, 'La contraseña es requerida.')
+        .string({ required_error: 'Password is required.' })
+        .min(1, 'Password is required.')
 });
 
 
