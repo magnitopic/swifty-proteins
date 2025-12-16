@@ -11,8 +11,13 @@ up: update-ip
 
 update-ip:
 	@echo "Detected IP: $$(ip route get 1 | awk '{print $$7;exit}')"
-	@sed -i "s|EXPO_PUBLIC_BACKEND_URL=.*|EXPO_PUBLIC_BACKEND_URL=http://$$(ip route get 1 | awk '{print $$7;exit}'):9000|g" .env
-	@sed -i "s|REACT_NATIVE_PACKAGER_HOSTNAME=.*|REACT_NATIVE_PACKAGER_HOSTNAME=$$(ip route get 1 | awk '{print $$7;exit}')|g" .env
+	@if [ "$$(uname)" = "Darwin" ]; then \
+		sed -i '' "s|EXPO_PUBLIC_BACKEND_URL=.*|EXPO_PUBLIC_BACKEND_URL=http://$$(ip route get 1 | awk '{print $$7;exit}'):9000|g" .env; \
+		sed -i '' "s|REACT_NATIVE_PACKAGER_HOSTNAME=.*|REACT_NATIVE_PACKAGER_HOSTNAME=$$(ip route get 1 | awk '{print $$7;exit}')|g" .env; \
+	else \
+		sed -i "s|EXPO_PUBLIC_BACKEND_URL=.*|EXPO_PUBLIC_BACKEND_URL=http://$$(ip route get 1 | awk '{print $$7;exit}'):9000|g" .env; \
+		sed -i "s|REACT_NATIVE_PACKAGER_HOSTNAME=.*|REACT_NATIVE_PACKAGER_HOSTNAME=$$(ip route get 1 | awk '{print $$7;exit}')|g" .env; \
+	fi
 
 down:
 	docker compose down
