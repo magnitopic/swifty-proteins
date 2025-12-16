@@ -99,6 +99,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 						{/* Add fingerprint button */}
 						<View className="flex-row justify-center">
 							<TouchableOpacity 
+								onPress={() => console.log('Fingerprint Pressed')}
 								className="w-20 h-20 mt-2 rounded-full justify-center items-center">
 								<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />
 							</TouchableOpacity>
