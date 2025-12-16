@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import LoginScreen from './src/screens/auth/LoginScreen';
-import RegisterScreen from './src/screens/auth/RegisterScreen';
+import SignUpScreen from './src/screens/auth/RegisterScreen';
 
 const backendUrl = process.env.EXPO_PUBLIC_BACKEND_URL;
 if (!backendUrl) {
@@ -16,7 +16,7 @@ export default function App() {
         <LoginScreen onNavigateToRegister={() => setCurrentScreen('Register')} />
       )}
       {currentScreen === 'Register' && (
-        <RegisterScreen onNavigateToLogin={() => setCurrentScreen('Login')} />
+        <SignUpScreen onNavigateToLogin={() => setCurrentScreen('Login')} />
       )}
     </>
   );

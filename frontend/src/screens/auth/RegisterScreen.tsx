@@ -35,7 +35,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 						showsVerticalScrollIndicator={false}
 					>
 
-						<View className="flex-row justify-start px-8 mt-4">
+						<View className="flex-row justify-start px-8 mt-8">
 							<CustomButton
 								variant='outline'
 								className="rounded-full py-1"
@@ -45,7 +45,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 							</CustomButton>
 						</View>
 
-						<View className="px-8 mt-10 mb-8">
+						<View className="px-8 mt-8 mb-8">
 							<Text className="text-3xl font-bold text-gray-800">
 								Create Account
 							</Text>
