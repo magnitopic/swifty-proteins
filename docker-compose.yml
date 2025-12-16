@@ -30,4 +30,32 @@ services:
       - /app/node_modules
     env_file:
       - .env
+    depends_on:
+      - postgres
     restart: always
+
+  postgres:
+    build:
+      context: ./postgresql
+      dockerfile: Dockerfile
+    container_name: postgres
+    environment:
+      POSTGRES_DB: swifty_proteins
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      ADMIN_USERNAME: ${ADMIN_USERNAME}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

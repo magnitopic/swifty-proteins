@@ -1,15 +1,23 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import pool, { query } from './db';
 
 const app = express();
-if (!process.env.BACKEND_PORT) {
-  throw new Error('BACKEND_PORT environment variable is not defined');
-}
-const PORT = process.env.BACKEND_PORT;
+const PORT = process.env.BACKEND_PORT || 9000;
 
-// Middlewares
+// Middleware
 app.use(cors());
-app.use(express.json());  
+app.use(express.json());
+
+// Test database connection on startup
+(async () => {
+  try {
+    const result = await query('SELECT NOW() as current_time');
+    console.log('✅ Database connection successful. Current time:', result.rows[0].current_time);
+  } catch (error) {
+    console.error('❌ Database connection failed:', error);
+  }
+})();
 
 // --- Test routes ---
 
@@ -27,7 +35,11 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   console.log('Login attempt received:', req.body);
 
   if (req.body.username && req.body.password) {
-    return res.status(200).send({ success: true, message: 'Login simulation successful', token: 'mock-jwt-token' });
+    return res.status(200).send({
+      success: true,
+      message: 'Login simulation successful',
+      token: 'mock-jwt-token'
+    });
   }
 
   res.status(401).send({ success: false, message: 'Missing username or password' });
