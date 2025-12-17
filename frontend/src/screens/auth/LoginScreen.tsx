@@ -49,7 +49,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 						{ text: "OK" } // TODO: navigate home
 					]
 				);
-	
+				
 			} catch (error: any) {
 				const message = error.response?.data?.message || "An unexpected error occurred";
 				Alert.alert("Error", message);
@@ -72,7 +72,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 						contentContainerStyle={{ flexGrow: 1 }}
 						showsVerticalScrollIndicator={false}
 					>
-						{/* Logo */}
+						{/* Logo  TODO: insert app logo */}
 						<View className="flex-row justify-center mt-10 mb-8">
 							<View className="w-24 h-24 bg-purple-100 rounded-full justify-center items-center">
 								<Text className="text-4xl">🔒</Text>

@@ -1,6 +1,7 @@
 FROM postgres:16-alpine
 
-# Copy init database script
+# Copy init database scripts
+COPY init-db.sql /docker-entrypoint-initdb.d/
 COPY init-db.sh /docker-entrypoint-initdb.d/
 
 # Set environment variables

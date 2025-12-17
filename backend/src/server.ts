@@ -3,7 +3,7 @@ import cors from 'cors';
 
 // Local imports
 import { config } from './config/env';
-import pool, { query } from './config/db';
+import pool, { query, initDB } from './config/db';
 import router from './routes';
 
 const app = express();
@@ -13,11 +13,14 @@ const PORT = config.server.port;
 app.use(cors());
 app.use(express.json());
 
-// Test database connection on startup
+// Test database connection and initialize admin user on startup
 (async () => {
   try {
     const result = await query('SELECT NOW() as current_time');
     console.log('✅ Database connection successful. Current time:', result.rows[0].current_time);
+
+    // Initialize admin user
+    await initDB();
   } catch (error) {
     console.error('❌ Database connection failed:', error);
   }

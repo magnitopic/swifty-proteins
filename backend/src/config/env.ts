@@ -18,7 +18,12 @@ const requiredEnvVars = [
 
     // Server Configuration
     'BACKEND_PORT',
-    'NODE_ENV'
+    'NODE_ENV',
+
+    // Admin User Configuration
+    'ADMIN_USERNAME',
+    'ADMIN_EMAIL',
+    'ADMIN_PASSWORD'
 ];
 
 // Check for required environment variables at startup
@@ -59,6 +64,11 @@ export const config = {
         port: parseInt(process.env.BACKEND_PORT!),
         nodeEnv: process.env.NODE_ENV!,
         backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || `http://localhost:${process.env.BACKEND_PORT}`
+    },
+    admin: {
+        username: process.env.ADMIN_USERNAME!,
+        email: process.env.ADMIN_EMAIL!,
+        password: process.env.ADMIN_PASSWORD!
     }
 } as const;
 
