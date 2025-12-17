@@ -6,13 +6,15 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView,
-	Alert
+	ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { CustomButton } from '../../components/CustomButton';
 import { Ionicons } from '@expo/vector-icons';
+
+// Local imports
+import { CustomButton } from '../../components/CustomButton';
+import { MessageBox } from '../../components/MessageBox';
 import { login } from '../../services';
 
 interface LoginScreenProps {
@@ -22,46 +24,71 @@ interface LoginScreenProps {
 export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
 	const [username, setusername] = useState('');
 	const [password, setPassword] = useState('');
-
 	const [isLoading, setIsLoading] = useState(false);
-	
-		const handleLogin = async () => {
-			// Data validation
-			if (!username || !password) {
-				Alert.alert("Error", "Please fill in all fields");
-				return;
-			}
-	
-			try {
-				setIsLoading(true); // Loading state
-	
-				// Call to service
-				await login({
-					username: username,
-					password: password
-				});
-	
-				// Success
-				Alert.alert(
-					"Signed in successfully!",
-					"You have successfully signed in.",
-					[
-						{ text: "OK" } // TODO: navigate home
-					]
-				);
-				
-			} catch (error: any) {
-				const message = error.response?.data?.message || "An unexpected error occurred";
-				Alert.alert("Error", message);
-			} finally {
-				setIsLoading(false); // End loading state
-			}
-		};
-	
+
+	// Message box states
+	const [showMessage, setShowMessage] = useState(false);
+	const [messageType, setMessageType] = useState<"success" | "error" | "info" | "app">("info");
+	const [messageText, setMessageText] = useState("");
+	const [messageButton, setMessageButton] = useState<{ text: string; onPress: () => void } | undefined>();
+
+	const handleLogin = async () => {
+		// Data validation
+		if (!username || !password) {
+			setMessageType("error");
+			setMessageText("Please fill in all fields");
+			setMessageButton(undefined);
+			setShowMessage(true);
+			setTimeout(() => setShowMessage(false), 3000);
+			return;
+		}
+
+		try {
+			setIsLoading(true); // Loading state
+
+			// Call to service
+			await login({
+				username: username,
+				password: password
+			});
+
+			// Success
+			setMessageType("success");
+			setMessageText("You have successfully signed in.");
+			setMessageButton({
+				text: "OK",
+				onPress: () => {
+					setShowMessage(false);
+					// TODO: navigate home
+				}
+			});
+			setShowMessage(true);
+
+		} catch (error: any) {
+			const message = error.response?.data?.message || "An unexpected error occurred";
+			setMessageType("error");
+			setMessageText(message);
+			setMessageButton(undefined);
+			setShowMessage(true);
+			setTimeout(() => setShowMessage(false), 4000);
+		} finally {
+			setIsLoading(false); // End loading state
+		}
+	};
+
 
 	return (
 		<View className="flex-1 bg-white">
 			<StatusBar style="dark" />
+
+			{/* Message Box */}
+			<MessageBox
+				type={messageType}
+				message={messageText}
+				show={showMessage}
+				buttonText={messageButton?.text}
+				onButtonPress={messageButton?.onPress}
+			/>
 
 			<SafeAreaView className="flex-1">
 				<KeyboardAvoidingView
@@ -125,7 +152,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 								onPress={handleLogin}
 								disabled={isLoading}
 							>
-								{ isLoading ? 'Signing in...' : 'Sign In' }
+								{isLoading ? 'Signing in...' : 'Sign In'}
 							</CustomButton>
 						</View>
 
@@ -138,7 +165,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 
 						{/* Add fingerprint button */}
 						<View className="flex-row justify-center">
-							<TouchableOpacity 
+							<TouchableOpacity
 								onPress={() => console.log('Fingerprint Pressed')}
 								className="w-20 h-20 mt-2 rounded-full justify-center items-center">
 								<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />

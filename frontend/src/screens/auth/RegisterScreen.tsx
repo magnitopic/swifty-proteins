@@ -6,8 +6,7 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView,
-	Alert
+	ScrollView
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -15,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 // Local imports
 import { CustomButton } from '../../components/CustomButton';
+import { MessageBox } from '../../components/MessageBox';
 import { register } from '../../services/authService';
 
 interface RegisterScreenProps {
@@ -25,13 +25,22 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-
 	const [isLoading, setIsLoading] = useState(false);
+
+	// Message box states
+	const [showMessage, setShowMessage] = useState(false);
+	const [messageType, setMessageType] = useState<"success" | "error" | "info" | "app">("info");
+	const [messageText, setMessageText] = useState("");
+	const [messageButton, setMessageButton] = useState<{ text: string; onPress: () => void } | undefined>();
 
 	const handleRegister = async () => {
 		// Data validation
 		if (!username || !email || !password) {
-			Alert.alert("Error", "Please fill in all fields");
+			setMessageType("error");
+			setMessageText("Please fill in all fields");
+			setMessageButton(undefined);
+			setShowMessage(true);
+			setTimeout(() => setShowMessage(false), 3000);
 			return;
 		}
 
@@ -46,14 +55,10 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 			});
 
 			// Success
-			Alert.alert(
-				"Created account!",
-				"Your account has been registered successfully. Please log in.",
-				[
-					{ text: "OK", onPress: () => onNavigateToLogin?.() } // Navigate to login on OK
-				]
-			);
-
+			setMessageType("success");
+			setMessageText("Your account has been registered successfully. You can now log in.");
+			setShowMessage(true)
+			setTimeout(() => onNavigateToLogin?.(), 3000);
 		} catch (error: any) {
 			// Error handling with detailed logging
 			console.log('Registration error:', error);
@@ -61,7 +66,11 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 			console.log('Response status:', error.response?.status);
 
 			const message = error.response?.data?.message || "An unexpected error occurred";
-			Alert.alert("Error", message);
+			setMessageType("error");
+			setMessageText(message);
+			setMessageButton(undefined);
+			setShowMessage(true);
+			setTimeout(() => setShowMessage(false), 4000);
 		} finally {
 			setIsLoading(false); // End loading state
 		}
@@ -70,6 +79,15 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 	return (
 		<View className="flex-1 bg-white">
 			<StatusBar style="dark" />
+
+			{/* Message Box */}
+			<MessageBox
+				type={messageType}
+				message={messageText}
+				show={showMessage}
+				buttonText={messageButton?.text}
+				onButtonPress={messageButton?.onPress}
+			/>
 
 			<SafeAreaView className="flex-1">
 				<KeyboardAvoidingView
@@ -152,7 +170,7 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 								onPress={handleRegister}
 								disabled={isLoading}
 							>
-								{ isLoading ? 'Signing up...' : 'Sign Up' }
+								{isLoading ? 'Signing up...' : 'Sign Up'}
 							</CustomButton>
 						</View>
 
