@@ -15,9 +15,10 @@ import { Ionicons } from '@expo/vector-icons';
 
 interface LoginScreenProps {
 	onNavigateToRegister?: () => void;
+	onNavigateToMain?: () => void;
 }
 
-export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
+export default function LoginScreen({ onNavigateToRegister, onNavigateToMain }: LoginScreenProps) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -36,8 +37,8 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 					>
 						{/* Logo */}
 						<View className="flex-row justify-center mt-10 mb-8">
-							<View className="w-24 h-24 bg-purple-100 rounded-full justify-center items-center">
-								<Text className="text-4xl">🔒</Text>
+							<View className="w-24 h-24 bg-primary-light rounded-full justify-center items-center">
+								<Text className="text-4xl">🧬</Text>
 							</View>
 						</View>
 
@@ -77,13 +78,13 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 									secureTextEntry
 								/>
 								<TouchableOpacity className="flex items-end my-1">
-									<Text className="text-purple-600 font-semibold">Forgot your password?</Text>
+									<Text className="text-primary font-semibold">Forgot your password?</Text>
 								</TouchableOpacity>
 							</View>
 
 							{/* Sign in button */}
 							<CustomButton
-								onPress={() => console.log('Sign In Pressed')}
+								onPress={() => onNavigateToMain?.()}
 							>
 								Sign In
 							</CustomButton>
@@ -101,7 +102,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 							<TouchableOpacity 
 								onPress={() => console.log('Fingerprint Pressed')}
 								className="w-20 h-20 mt-2 rounded-full justify-center items-center">
-								<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />
+								<Ionicons name="finger-print-sharp" size={54} color="#0EA5E9" />
 							</TouchableOpacity>
 						</View>
 
@@ -109,7 +110,7 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 						<View className="flex-row justify-center mt-6">
 							<Text className="text-gray-500 font-medium">Don't have an account? </Text>
 							<TouchableOpacity onPress={onNavigateToRegister}>
-								<Text className="font-bold text-purple-600">Sign Up</Text>
+								<Text className="font-bold text-primary">Sign Up</Text>
 							</TouchableOpacity>
 						</View>
 

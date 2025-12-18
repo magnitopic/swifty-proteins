@@ -97,10 +97,10 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 							</CustomButton>
 						</View>
 
-						<View className="flex-row justify-center mt-8 mb-10">
+						<View className="flex-row justify-center mt-6">
 							<Text className="text-gray-500 font-medium">Already have an account? </Text>
 							<TouchableOpacity onPress={onNavigateToLogin}>
-								<Text className="font-bold text-purple-600">Log In</Text>
+								<Text className="font-bold text-primary">Log In</Text>
 							</TouchableOpacity>
 						</View>
 
