@@ -4,10 +4,10 @@
 		"slug": "swifty-proteins",
 		"version": "1.0.0",
 		"orientation": "portrait",
-		"icon": "./assets/icon.png",
+		"icon": "./assets/icons/icon.png",
 		"userInterfaceStyle": "automatic",
 		"splash": {
-			"image": "./assets/splash.png",
+			"image": "./assets/icons/splash.png",
 			"resizeMode": "contain",
 			"backgroundColor": "#ffffff"
 		},
@@ -18,14 +18,15 @@
 		},
 		"android": {
 			"adaptiveIcon": {
-				"foregroundImage": "./assets/adaptive-icon.png",
+				"foregroundImage": "./assets/icons/icon.png",
 				"backgroundColor": "#ffffff"
 			},
 			"package": "com.42.swiftyproteins"
 		},
 		"web": {
-			"favicon": "./assets/favicon.png",
+			"favicon": "./assets/icons/favicon.png",
 			"bundler": "metro"
-		}
+		},
+		"plugins": ["expo-asset"]
 	}
 }
