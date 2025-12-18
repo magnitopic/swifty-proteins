@@ -6,7 +6,8 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	ScrollView
+	ScrollView,
+	Image
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -37,8 +38,12 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToMain }: 
 					>
 						{/* Logo */}
 						<View className="flex-row justify-center mt-10 mb-8">
-							<View className="w-24 h-24 bg-primary-light rounded-full justify-center items-center">
-								<Text className="text-4xl">🧬</Text>
+							<View className="w-24 h-24 rounded-xl justify-center items-center overflow-hidden">
+								<Image
+									source={require('../../../assets/icons/favicon.png')}
+									className="w-20 h-20"
+									resizeMode="contain"
+								/>
 							</View>
 						</View>
 
