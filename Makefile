@@ -19,6 +19,9 @@ update-ip:
 		sed -i "s|REACT_NATIVE_PACKAGER_HOSTNAME=.*|REACT_NATIVE_PACKAGER_HOSTNAME=$$(ip route get 1 | awk '{print $$7;exit}')|g" .env; \
 	fi
 
+ios:
+	@cd frontend && EXPO_PUBLIC_BACKEND_URL=localhost npx expo start
+
 down:
 	docker compose down
 
