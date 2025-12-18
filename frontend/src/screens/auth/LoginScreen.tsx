@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	View,
 	Text,
@@ -11,6 +11,8 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import * as LocalAuthentication from 'expo-local-authentication';
+import * as SecureStore from 'expo-secure-store';
 
 // Local imports
 import { CustomButton } from '../../components/CustomButton';
@@ -19,9 +21,10 @@ import { login } from '../../services';
 
 interface LoginScreenProps {
 	onNavigateToRegister?: () => void;
+	onNavigateToHome?: () => void;
 }
 
-export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) {
+export default function LoginScreen({ onNavigateToRegister, onNavigateToHome }: LoginScreenProps) {
 	const [username, setusername] = useState('');
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +34,17 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 	const [messageType, setMessageType] = useState<"success" | "error" | "info" | "app">("info");
 	const [messageText, setMessageText] = useState("");
 	const [messageButton, setMessageButton] = useState<{ text: string; onPress: () => void } | undefined>();
+
+	const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+
+	// Check biometric support
+	useEffect(() => {
+		(async () => {
+			const compatible = await LocalAuthentication.hasHardwareAsync();
+			const enrolled = await LocalAuthentication.isEnrolledAsync();
+			setIsBiometricSupported(compatible && enrolled);
+		})();
+	}, []);
 
 	const handleLogin = async () => {
 		// Data validation
@@ -44,38 +58,64 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 		}
 
 		try {
-			setIsLoading(true); // Loading state
+			setIsLoading(true);
 
-			// Call to service
-			await login({
+			// Call to login service
+			const response = await login({
 				username: username,
 				password: password
 			});
 
-			// Success
-			setMessageType("success");
-			setMessageText("You have successfully signed in.");
-			setMessageButton({
-				text: "OK",
-				onPress: () => {
-					setShowMessage(false);
-					// TODO: navigate home
-				}
-			});
-			setShowMessage(true);
+			// Save tokens in secure storage & redirect to home
+			await SecureStore.setItemAsync('userToken', response.accessToken);
+			await SecureStore.setItemAsync('refreshToken', response.refreshToken);
+			await SecureStore.setItemAsync('user', JSON.stringify(response.user));
+			onNavigateToHome?.();
 
 		} catch (error: any) {
-			const message = error.response?.data?.message || "An unexpected error occurred";
+			const message = error.response?.data?.message || "An unexpected error occurred, please try again later";
 			setMessageType("error");
 			setMessageText(message);
 			setMessageButton(undefined);
 			setShowMessage(true);
 			setTimeout(() => setShowMessage(false), 4000);
 		} finally {
-			setIsLoading(false); // End loading state
+			setIsLoading(false);
 		}
 	};
 
+	const handleBiometricAuth = async () => {
+		try {
+			const result = await LocalAuthentication.authenticateAsync({
+				promptMessage: 'Login with biometry',
+				fallbackLabel: 'Use password',
+				disableDeviceFallback: false,
+			});
+
+			if (result.success) {
+				const savedToken = await SecureStore.getItemAsync('userToken');
+
+				if (savedToken) {
+					setMessageType("success");
+					setMessageText("Signing in...");
+					setShowMessage(true);
+
+					setTimeout(() => {
+						setShowMessage(false);
+						onNavigateToHome?.();
+					}, 1500);
+				} else {
+					setMessageType("error");
+					setMessageText("Please, sign in with your credentials");
+					setShowMessage(true);
+				}
+			}
+		} catch (error) {
+			console.error(error);
+			setMessageText("Error in biometric authentication");
+			setShowMessage(true);
+		}
+	};
 
 	return (
 		<View className="flex-1 bg-white">
@@ -156,21 +196,25 @@ export default function LoginScreen({ onNavigateToRegister }: LoginScreenProps) 
 							</CustomButton>
 						</View>
 
-						{/* Or continue with */}
-						<View className="flex-row justify-center items-center mt-10">
-							<View className="border-b border-gray-300 w-16" />
-							<Text className="text-gray-400 mx-2">Or continue with</Text>
-							<View className="border-b border-gray-300 w-16" />
-						</View>
-
 						{/* Add fingerprint button */}
-						<View className="flex-row justify-center">
-							<TouchableOpacity
-								onPress={() => console.log('Fingerprint Pressed')}
-								className="w-20 h-20 mt-2 rounded-full justify-center items-center">
-								<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />
-							</TouchableOpacity>
-						</View>
+						{isBiometricSupported && (
+							<>
+								<View className="flex-row justify-center items-center mt-10">
+									<View className="border-b border-gray-300 w-16" />
+									<Text className="text-gray-400 mx-2">Or continue with</Text>
+									<View className="border-b border-gray-300 w-16" />
+								</View>
+
+
+								<View className="flex-row justify-center">
+									<TouchableOpacity
+										onPress={handleBiometricAuth}
+										className="w-20 h-20 mt-2 rounded-full justify-center items-center">
+										<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />
+									</TouchableOpacity>
+								</View>
+							</>
+						)}
 
 						{/* Sign up button */}
 						<View className="flex-row justify-center mt-6">
