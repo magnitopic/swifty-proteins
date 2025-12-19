@@ -19,12 +19,13 @@ const api = axios.create({
 api.interceptors.request.use(
     async (config) => {
         try {
-            const token = await SecureStore.getItemAsync('accessToken');
+            // Use 'userToken' to match what's saved in LoginScreen
+            const token = await SecureStore.getItemAsync('userToken');
             if (token) {
                 config.headers.Authorization = `Bearer ${token}`;
             }
         } catch (error) {
-            console.error('Error leyendo token del storage', error);
+            console.error('Error reading token from storage', error);
         }
         return config;
     },
@@ -45,7 +46,15 @@ api.interceptors.response.use(
                 const refreshToken = await SecureStore.getItemAsync('refreshToken');
 
                 if (!refreshToken) {
+                    console.log('No refresh token found, session expired completely');
                     // If no refresh token, the session expired completely
+                    await SecureStore.deleteItemAsync('userToken');
+                    await SecureStore.deleteItemAsync('refreshToken');
+                    await SecureStore.deleteItemAsync('user');
+                    await SecureStore.deleteItemAsync('biometricEnabled');
+
+                    // TODO: redirect to login
+                    // (Use Context API or Redux to manage authentication state)
                     return Promise.reject(error);
                 }
 
@@ -54,25 +63,29 @@ api.interceptors.response.use(
                     refreshToken: refreshToken
                 });
 
-                // Save the new Access Token
+                // Save the new Access Token with the correct key name
                 if (data.accessToken) {
-                    await SecureStore.setItemAsync('accessToken', data.accessToken);
+                    console.log('Access token refreshed successfully');
+                    await SecureStore.setItemAsync('userToken', data.accessToken);
 
                     // Update the header of the original request with the new token
                     originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
                     // Retry the original request with the new token
                     return api(originalRequest);
+                } else {
+                    throw new Error('No access token in refresh response');
                 }
             } catch (refreshError) {
                 // If token refresh fails, clear the session
-                console.log('Error refreshing token, closing session...');
+                console.error('Error refreshing token:', refreshError);
+                console.log('Clearing session data...');
 
-                await SecureStore.deleteItemAsync('accessToken');
+                await SecureStore.deleteItemAsync('userToken');
                 await SecureStore.deleteItemAsync('refreshToken');
-
-                // TODO: redirect login
-                // (Use Context API or Redux to manage authentication state)
+                await SecureStore.deleteItemAsync('user');
+                await SecureStore.deleteItemAsync('biometricEnabled');
+                return Promise.reject(refreshError);
             }
         }
 
