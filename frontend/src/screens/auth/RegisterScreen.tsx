@@ -16,6 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { CustomButton } from '../../components/CustomButton';
 import { MessageBox } from '../../components/MessageBox';
 import { register } from '../../services/authService';
+import { TopBar } from '../../components/TopBar';
 
 interface RegisterScreenProps {
 	onNavigateToLogin?: () => void;
@@ -100,21 +101,13 @@ export default function SignUpScreen({ onNavigateToLogin }: RegisterScreenProps)
 					>
 
 						{/* Go back button */}
-						<View className="flex-row justify-start px-8 mt-8">
-							<CustomButton
-								variant='outline'
-								className="rounded-full py-1 flex flex-row items-center"
-								onPress={onNavigateToLogin}
-								disabled={isLoading}
-							>
-								<View className="flex-row items-center">
-									<Ionicons name="return-up-back" size={24} color="#9333EA" />
-									<Text className="font-bold text-purple-600 ml-2">Go Back</Text>
-								</View>
-							</CustomButton>
-						</View>
+						{/* Header with back button */}
+						<TopBar
+							title="Go Back"
+							onBackPress={onNavigateToLogin}
+						/>
 
-						<View className="px-8 mt-8 mb-8">
+						<View className="px-8 mt-12 mb-8 items-center">
 							<Text className="text-3xl font-bold text-gray-800">
 								Create Account
 							</Text>

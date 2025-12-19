@@ -2,16 +2,15 @@ import React, { useState, useEffect } from "react";
 import {
 	View,
 	Text,
-	TouchableOpacity,
 	FlatList,
 	ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons } from "@expo/vector-icons";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system/legacy";
 import LigandListItem from "../../components/LigandListItem";
+import { TopBar } from "../../components/TopBar";
 
 interface ListProteinScreenProps {
 	onNavigateBack?: () => void;
@@ -65,21 +64,12 @@ export default function ListProteinScreen({
 		<View className="flex-1 bg-background-main">
 			<StatusBar style="dark" />
 			<SafeAreaView className="flex-1">
-				{/* TODO -> Make component */}
 				{/* Header with back button */}
-				<View className="flex-row items-center px-4 py-3 bg-white border-b border-border-color">
-					<TouchableOpacity onPress={onNavigateBack} className="p-2">
-						<Ionicons name="arrow-back" size={24} color="#0EA5E9" />
-					</TouchableOpacity>
-					<Text className="text-xl font-semibold text-gray-800 ml-2">
-						Protein Ligands
-					</Text>
-					<View className="ml-auto bg-primary-light px-3 py-1 rounded-full">
-						<Text className="text-primary font-semibold text-sm">
-							{ligands.length}
-						</Text>
-					</View>
-				</View>
+				<TopBar
+					title="Protein Ligands"
+					onBackPress={onNavigateBack}
+					counter={ligands.length}
+				/>
 
 				{/* Show loading indicator while loading */}
 				{loading ? (

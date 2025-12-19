@@ -18,7 +18,7 @@ import * as SecureStore from 'expo-secure-store';
 // Local imports
 import { CustomButton } from '../../components/CustomButton';
 import { MessageBox } from '../../components/MessageBox';
-import { BiometricSetupModal } from '../../components/BiometricSetupModal';
+import { BiometricSetupModal } from './BiometricSetupModal';
 import { login } from '../../services';
 
 interface LoginScreenProps {
