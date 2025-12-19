@@ -20,7 +20,7 @@ export default function App() {
 			{currentScreen === "Login" && (
 				<LoginScreen
 					onNavigateToRegister={() => setCurrentScreen("Register")}
-					onNavigateToMain={() => setCurrentScreen("ListProtein")}
+					onNavigateToListProtein={() => setCurrentScreen("ListProtein")}
 				/>
 			)}
 			{currentScreen === "Register" && (

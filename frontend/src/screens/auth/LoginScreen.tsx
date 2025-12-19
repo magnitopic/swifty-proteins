@@ -22,10 +22,10 @@ import { login } from '../../services';
 
 interface LoginScreenProps {
 	onNavigateToRegister?: () => void;
-	onNavigateToHome?: () => void;
+	onNavigateToListProtein?: () => void;
 }
 
-export default function LoginScreen({ onNavigateToRegister, onNavigateToHome }: LoginScreenProps) {
+export default function LoginScreen({ onNavigateToRegister, onNavigateToListProtein }: LoginScreenProps) {
 	const [username, setusername] = useState('');
 	const [password, setPassword] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
@@ -67,12 +67,13 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToHome }: 
 				password: password
 			});
 
+			console.log(response);
+
 			// Save tokens in secure storage & redirect to home
 			await SecureStore.setItemAsync('userToken', response.accessToken);
 			await SecureStore.setItemAsync('refreshToken', response.refreshToken);
 			await SecureStore.setItemAsync('user', JSON.stringify(response.user));
-			onNavigateToHome?.();
-
+			onNavigateToListProtein?.();
 		} catch (error: any) {
 			const message = error.response?.data?.message || "An unexpected error occurred, please try again later";
 			setMessageType("error");
@@ -103,7 +104,7 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToHome }: 
 
 					setTimeout(() => {
 						setShowMessage(false);
-						onNavigateToHome?.();
+						onNavigateToListProtein?.();
 					}, 1500);
 				} else {
 					setMessageType("error");
