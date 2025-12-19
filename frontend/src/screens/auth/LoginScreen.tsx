@@ -18,6 +18,7 @@ import * as SecureStore from 'expo-secure-store';
 // Local imports
 import { CustomButton } from '../../components/CustomButton';
 import { MessageBox } from '../../components/MessageBox';
+import { BiometricSetupModal } from '../../components/BiometricSetupModal';
 import { login } from '../../services';
 
 interface LoginScreenProps {
@@ -37,8 +38,19 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToListProt
 	const [messageButton, setMessageButton] = useState<{ text: string; onPress: () => void } | undefined>();
 
 	const [isBiometricSupported, setIsBiometricSupported] = useState(false);
+	// Biometric setup modal state
+	const [showBiometricSetupModal, setShowBiometricSetupModal] = useState(false);
 
 	// Check biometric support
+	useEffect(() => {
+		(async () => {
+			const biometricEnabled = await SecureStore.getItemAsync('biometricEnabled');
+			if (biometricEnabled) {
+				handleBiometricAuth();
+			}
+		})();
+	}, []);
+
 	useEffect(() => {
 		(async () => {
 			const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -67,12 +79,22 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToListProt
 				password: password
 			});
 
-			console.log(response);
-
-			// Save tokens in secure storage & redirect to home
+			// Save tokens in secure storage
 			await SecureStore.setItemAsync('userToken', response.accessToken);
 			await SecureStore.setItemAsync('refreshToken', response.refreshToken);
 			await SecureStore.setItemAsync('user', JSON.stringify(response.user));
+
+			// Check if we should show biometric setup modal
+			if (isBiometricSupported) {
+				const hasBiometricToken = await SecureStore.getItemAsync('biometricEnabled');
+				if (!hasBiometricToken) {
+					// Show modal to ask if user wants to enable biometric auth
+					setShowBiometricSetupModal(true);
+					return; // Don't navigate yet, wait for user's choice
+				}
+			}
+
+			// Navigate to home if biometric modal is not shown
 			onNavigateToListProtein?.();
 		} catch (error: any) {
 			const message = error.response?.data?.message || "An unexpected error occurred, please try again later";
@@ -88,24 +110,28 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToListProt
 
 	const handleBiometricAuth = async () => {
 		try {
+			// Check if biometric is enabled first
+			const biometricEnabled = await SecureStore.getItemAsync('biometricEnabled');
+
+			if (!biometricEnabled) {
+				setMessageType("info");
+				setMessageText("Please sign in with your credentials first to enable biometric login");
+				setShowMessage(true);
+				setTimeout(() => setShowMessage(false), 3000);
+				return;
+			}
+
 			const result = await LocalAuthentication.authenticateAsync({
 				promptMessage: 'Login with biometry',
-				fallbackLabel: 'Use password',
-				disableDeviceFallback: false,
+				cancelLabel: 'Use Password',
+				disableDeviceFallback: true,
 			});
 
 			if (result.success) {
-				const savedToken = await SecureStore.getItemAsync('userToken');
+				const savedToken = await SecureStore.getItemAsync('refreshToken');
 
 				if (savedToken) {
-					setMessageType("success");
-					setMessageText("Signing in...");
-					setShowMessage(true);
-
-					setTimeout(() => {
-						setShowMessage(false);
-						onNavigateToListProtein?.();
-					}, 1500);
+					onNavigateToListProtein?.();
 				} else {
 					setMessageType("error");
 					setMessageText("Please, sign in with your credentials");
@@ -117,6 +143,34 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToListProt
 			setMessageText("Error in biometric authentication");
 			setShowMessage(true);
 		}
+	};
+
+	const handleEnableBiometric = async () => {
+		try {
+			// Mark that biometric authentication is enabled
+			await SecureStore.setItemAsync('biometricEnabled', 'true');
+
+			setShowBiometricSetupModal(false);
+
+			// Show success message
+			setMessageType("success");
+			setMessageText("Biometric authentication enabled successfully!");
+			setShowMessage(true);
+
+			setTimeout(() => {
+				setShowMessage(false);
+				onNavigateToListProtein?.();
+			}, 1500);
+		} catch (error) {
+			console.error('Error enabling biometric:', error);
+			setShowBiometricSetupModal(false);
+			onNavigateToListProtein?.();
+		}
+	};
+
+	const handleSkipBiometric = () => {
+		setShowBiometricSetupModal(false);
+		onNavigateToListProtein?.();
 	};
 
 	return (
@@ -131,6 +185,14 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToListProt
 				buttonText={messageButton?.text}
 				onButtonPress={messageButton?.onPress}
 			/>
+
+			{/* Biometric Setup Modal */}
+			<BiometricSetupModal
+				visible={showBiometricSetupModal}
+				onEnable={handleEnableBiometric}
+				onSkip={handleSkipBiometric}
+			/>
+
 
 			<SafeAreaView className="flex-1">
 				<KeyboardAvoidingView
@@ -220,7 +282,7 @@ export default function LoginScreen({ onNavigateToRegister, onNavigateToListProt
 									<TouchableOpacity
 										onPress={handleBiometricAuth}
 										className="w-20 h-20 mt-2 rounded-full justify-center items-center">
-										<Ionicons name="finger-print-sharp" size={54} color="#9333EA" />
+										<Ionicons name="finger-print-sharp" size={54} color="#0EA5E9" />
 									</TouchableOpacity>
 								</View>
 							</>

@@ -35,7 +35,7 @@ export default function ListProteinScreen({
 
 			// Read the file content using legacy API
 			const fileContent = await FileSystem.readAsStringAsync(
-				asset.localUri
+				asset.localUri || ""
 			);
 
 			// Split by lines and filter out empty lines
