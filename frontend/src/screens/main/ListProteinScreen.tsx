@@ -65,6 +65,7 @@ export default function ListProteinScreen({
 		<View className="flex-1 bg-background-main">
 			<StatusBar style="dark" />
 			<SafeAreaView className="flex-1">
+				{/* TODO -> Make component */}
 				{/* Header with back button */}
 				<View className="flex-row items-center px-4 py-3 bg-white border-b border-border-color">
 					<TouchableOpacity onPress={onNavigateBack} className="p-2">
