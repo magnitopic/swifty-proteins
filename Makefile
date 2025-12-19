@@ -1,4 +1,4 @@
-.PHONY: all build up down restart logs logs-f clean re qr re-backend re-frontend install-backend install-frontend attach update-ip
+.PHONY: all build up down restart logs logs-f clean re qr re-backend re-frontend re-db install-backend install-frontend attach update-ip show-users
 
 all:	up
 
@@ -45,6 +45,15 @@ re-frontend:
 	docker compose stop frontend
 	docker compose up -d --build frontend
 
+re-db:
+	docker compose stop postgres
+	docker compose rm -f postgres
+	docker volume rm swifty-proteins_postgres_data || true
+	docker compose up -d --build postgres
+	@sleep 5
+	@echo "✅ PostgreSQL database rebuilt successfully!"
+	docker compose restart backend
+
 restart:
 	docker compose down
 	docker compose up -d --build
@@ -59,4 +68,7 @@ install-frontend:
 
 copy-node_modules:
 	docker compose exec -T backend tar cf - node_modules | tar xf - -C ./backend
+
+show-users:
+	docker compose exec postgres psql -U postgres -d swifty_proteins -c "SELECT * FROM users;"
 

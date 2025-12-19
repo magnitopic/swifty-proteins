@@ -12,6 +12,14 @@
 			"backgroundColor": "#ffffff"
 		},
 		"assetBundlePatterns": ["**/*"],
+		"plugins": [
+			[
+				"expo-local-authentication",
+				{
+				"faceIDPermission": "Let us use FaceID for a faster login."
+				}
+			]
+		],
 		"ios": {
 			"supportsTablet": true,
 			"bundleIdentifier": "com.42.swiftyproteins"
