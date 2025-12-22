@@ -11,6 +11,7 @@ import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system/legacy";
 import LigandListItem from "../../components/LigandListItem";
 import { TopBar } from "../../components/TopBar";
+import { getPdb } from "../../services/pdbService";
 
 interface ListProteinScreenProps {
 	onNavigateBack?: () => void;
@@ -51,8 +52,14 @@ export default function ListProteinScreen({
 		}
 	};
 
-	const handleLigandPress = (ligandName: string) => {
+	const handleLigandPress = async (ligandName: string) => {
 		console.log("Selected:", ligandName);
+		try {
+			const pdbFile = await getPdb(ligandName);
+			console.log("PDB file:", pdbFile);
+		} catch (error) {
+			console.error("Error getting pdb file:", error);
+		}
 		// TODO: Navigate to ligand detail screen
 	};
 
