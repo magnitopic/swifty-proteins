@@ -28,6 +28,7 @@ export default function ListProteinScreen({
 	onNavigateBack, onNavigateToLigandView
 }: ListProteinScreenProps) {
 	const [ligands, setLigands] = useState<string[]>([]);
+	const [ligandsCount, setLigandsCount] = useState(0);
 	const [filteredLigands, setFilteredLigands] = useState<string[]>([]);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [loading, setLoading] = useState(true);
@@ -61,6 +62,7 @@ export default function ListProteinScreen({
 				.filter((line) => line !== "");
 
 			setLigands(ligandList);
+			setLigandsCount(ligandList.length);
 			setFilteredLigands(ligandList);
 			setLoading(false);
 		} catch (error) {
@@ -73,11 +75,13 @@ export default function ListProteinScreen({
 		setSearchQuery(query);
 		if (query.trim() === "") {
 			setFilteredLigands(ligands);
+			setLigandsCount(ligands.length);
 		} else {
 			const filtered = ligands.filter((ligand) =>
 				ligand.toLowerCase().includes(query.toLowerCase())
 			);
 			setFilteredLigands(filtered);
+			setLigandsCount(filtered.length);
 		}
 	};
 
@@ -98,7 +102,7 @@ export default function ListProteinScreen({
 				<TopBar
 					title="Protein Ligands"
 					onBackPress={onNavigateBack}
-					counter={ligands.length}
+					counter={ligandsCount}
 				/>
 
 				{ user?.username && (
