@@ -17,6 +17,7 @@ export default function App() {
 	>("Login");
 
 	const [currentLigandId, setCurrentLigandId] = useState<string>("");
+	const [currentPdbData, setCurrentPdbData] = useState<string>("");
 
 	return (
 		<>
@@ -34,8 +35,9 @@ export default function App() {
 			{currentScreen === "ListProtein" && (
 				<ListProteinScreen
 					onNavigateBack={() => setCurrentScreen("Login")}
-					onNavigateToLigandView={(ligandId: string) => {
+					onNavigateToLigandView={(ligandId: string, pdbData: string) => {
 						setCurrentLigandId(ligandId);
+						setCurrentPdbData(pdbData);
 						setCurrentScreen("LigandView");
 					}}
 				/>
@@ -44,6 +46,7 @@ export default function App() {
 				<LigandViewScreen
 					onNavigateBack={() => setCurrentScreen("ListProtein")}
 					ligandId={currentLigandId}
+					pdbData={currentPdbData}
 				/>
 			)}
 		</>

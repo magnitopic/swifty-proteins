@@ -68,7 +68,7 @@ export default function LigandViewScreen({
           <View className="flex-1 justify-center items-center">
             {/* Model render */}
             <Text className="text-font-main text-xl text-center">
-              .pdb loaded successfully in this Screen: const pdbFile (line:38)
+              .pdb loaded successfully in this Screen
             </Text>
             <Text className="text-primary font-medium text-xl text-center">
               Render ligand 3d
