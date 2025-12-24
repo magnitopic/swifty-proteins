@@ -12,6 +12,8 @@ import * as FileSystem from "expo-file-system/legacy";
 import LigandListItem from "../../components/LigandListItem";
 import { TopBar } from "../../components/TopBar";
 import * as SecureStore from "expo-secure-store";
+import { getPdb } from "../../services/pdbService";
+import SearchBar from "../../components/SearchBar";
 
 interface ListProteinScreenProps {
 	onNavigateBack?: () => void;
@@ -26,6 +28,8 @@ export default function ListProteinScreen({
 	onNavigateBack, onNavigateToLigandView
 }: ListProteinScreenProps) {
 	const [ligands, setLigands] = useState<string[]>([]);
+	const [filteredLigands, setFilteredLigands] = useState<string[]>([]);
+	const [searchQuery, setSearchQuery] = useState("");
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState<UserProps>();
 
@@ -57,10 +61,23 @@ export default function ListProteinScreen({
 				.filter((line) => line !== "");
 
 			setLigands(ligandList);
+			setFilteredLigands(ligandList);
 			setLoading(false);
 		} catch (error) {
 			console.error("Error loading ligands file:", error);
 			setLoading(false);
+		}
+	};
+
+	const handleSearch = (query: string) => {
+		setSearchQuery(query);
+		if (query.trim() === "") {
+			setFilteredLigands(ligands);
+		} else {
+			const filtered = ligands.filter((ligand) =>
+				ligand.toLowerCase().includes(query.toLowerCase())
+			);
+			setFilteredLigands(filtered);
 		}
 	};
 
@@ -88,6 +105,15 @@ export default function ListProteinScreen({
 					<Text className="self-center text-xl font-medium text-font-main mt-3">Hi {user?.username}!</Text>
 				)}
 
+				{/* Search Bar */}
+				{!loading && (
+					<SearchBar
+						value={searchQuery}
+						onChangeText={handleSearch}
+						placeholder="Search ligands..."
+					/>
+				)}
+
 				{/* Show loading indicator while loading */}
 				{loading ? (
 					<View className="flex-1 justify-center items-center">
@@ -95,7 +121,7 @@ export default function ListProteinScreen({
 					</View>
 				) : (
 					<FlatList
-						data={ligands}
+						data={filteredLigands}
 						renderItem={renderLigandItem}
 						keyExtractor={(item, index) => `${item}-${index}`}
 						contentContainerStyle={{
