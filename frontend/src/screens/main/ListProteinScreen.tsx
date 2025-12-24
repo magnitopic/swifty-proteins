@@ -12,9 +12,14 @@ import * as FileSystem from "expo-file-system/legacy";
 import LigandListItem from "../../components/LigandListItem";
 import { TopBar } from "../../components/TopBar";
 import { getPdb } from "../../services/pdbService";
+import * as SecureStore from "expo-secure-store";
 
 interface ListProteinScreenProps {
 	onNavigateBack?: () => void;
+}
+
+interface UserProps {
+	username: string;
 }
 
 export default function ListProteinScreen({
@@ -22,10 +27,17 @@ export default function ListProteinScreen({
 }: ListProteinScreenProps) {
 	const [ligands, setLigands] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [user, setUser] = useState<UserProps>();
 
 	useEffect(() => {
 		loadLigandsFromFile();
+		getLoggedUser();
 	}, []);
+
+	const getLoggedUser = async () => {
+		const user = await SecureStore.getItemAsync('user');
+		setUser(JSON.parse(user || '{}'));
+	}
 
 	const loadLigandsFromFile = async () => {
 		try {
@@ -77,6 +89,10 @@ export default function ListProteinScreen({
 					onBackPress={onNavigateBack}
 					counter={ligands.length}
 				/>
+
+				{ user?.username && (
+					<Text className="self-center text-xl font-medium text-font-main mt-3">Hi {user?.username}!</Text>
+				)}
 
 				{/* Show loading indicator while loading */}
 				{loading ? (
