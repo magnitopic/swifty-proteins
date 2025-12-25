@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, TouchableOpacity } from "react-native";
+import {
+	View,
+	Text,
+	TouchableOpacity,
+	ActivityIndicator,
+	Share,
+	Alert,
+} from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { TopBar } from "../../components/TopBar";
-import { getPdb } from "../../services/pdbService";
 import * as SecureStore from "expo-secure-store";
+import AtomTooltip from "../../components/AtomTooltip";
+import { parsePDB, Atom, PDBData } from "../../utils/pdbParser";
 
 interface LigandViewScreenProps {
 	onNavigateBack?: () => void;
 	ligandId: string;
+	pdbData: string;
 }
 
 interface UserProps {
@@ -19,31 +28,47 @@ interface UserProps {
 export default function LigandViewScreen({
 	onNavigateBack,
 	ligandId,
+	pdbData,
 }: LigandViewScreenProps) {
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState<UserProps>();
+	const [parsedData, setParsedData] = useState<PDBData | null>(null);
+	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
+	const [showTooltip, setShowTooltip] = useState(false);
 
 	useEffect(() => {
-		getLigandStructure();
-		getLoggedUser();
-	}, []);
-
-	const getLigandStructure = async () => {
 		setLoading(true);
+		getLoggedUser();
+		// Parse PDB data
 		try {
-			const pdbFile = await getPdb(ligandId);
-			console.log("PDB file:\n" + pdbFile);
-			console.log("_________________________");
+			const parsed = parsePDB(pdbData);
+			setParsedData(parsed);
+			console.log(
+				`Parsed ${parsed.atoms.length} atoms and ${parsed.bonds.length} bonds`
+			);
 		} catch (error) {
-			console.log("Error getting pdb file:", error);
-		} finally {
-			setLoading(false);
+			console.error("Error parsing PDB data:", error);
+			Alert.alert("Error", "Failed to parse protein structure");
 		}
-	};
+		setLoading(false);
+	}, [pdbData]);
 
 	const getLoggedUser = async () => {
 		const user = await SecureStore.getItemAsync("user");
 		setUser(JSON.parse(user || "{}"));
+	};
+
+	const handleShare = async () => {
+		try {
+			await Share.share({
+				message: `Check out this protein ligand: ${ligandId}\n\nAtoms: ${
+					parsedData?.atoms.length || 0
+				}\nBonds: ${parsedData?.bonds.length || 0}`,
+				title: `Protein Ligand: ${ligandId}`,
+			});
+		} catch (error) {
+			console.error("Error sharing:", error);
+		}
 	};
 
 	return (
@@ -73,9 +98,19 @@ export default function LigandViewScreen({
 					</View>
 				)}
 
+				{/* Atom Tooltip */}
+				<AtomTooltip
+					atom={selectedAtom}
+					visible={showTooltip}
+					onClose={() => setShowTooltip(false)}
+				/>
+
 				{/* Share button */}
 				<View className="absolute bottom-20 right-6">
-					<TouchableOpacity className="bg-primary border-2 border-primary-dark rounded-full p-3 text-center items-center justify-center">
+					<TouchableOpacity
+						onPress={handleShare}
+						className="bg-primary border-2 border-primary-dark rounded-full p-3 shadow-lg"
+					>
 						<Ionicons
 							name="share-outline"
 							size={36}
