@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, PanResponder } from "react-native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { PDBData, Atom } from "../utils/pdbParser";
 import MoleculeModel from "./MoleculeModel";
@@ -9,88 +9,18 @@ interface ProteinVisualizerProps {
 	onAtomClick?: (atom: Atom) => void;
 }
 
+// Configuration for gesture sensitivity
+const ROTATION_SPEED = 0.01; // Lower = slower rotation
+const ZOOM_SPEED = 0.07; // Pinch zoom sensitivity
+const MOVEMENT_THRESHOLD = 5; // Minimum pixels to move before capturing gesture
+
+// Shared rotation and distance refs accessible by both gesture handler and camera
+const rotationRef = { current: { x: 0, y: 0 } };
+const distanceRef = { current: 30 };
+
 // Interactive Camera with touch controls
 function InteractiveCamera() {
-	const { camera, gl } = useThree();
-	const rotationRef = useRef({ x: 0, y: 0 });
-	const lastTouchRef = useRef({ x: 0, y: 0 });
-	const distanceRef = useRef(30);
-	const isDraggingRef = useRef(false);
-
-	React.useEffect(() => {
-		const canvas = gl.domElement;
-
-		const handleTouchStart = (e: TouchEvent) => {
-			if (e.touches.length === 1) {
-				isDraggingRef.current = true;
-				lastTouchRef.current = {
-					x: e.touches[0].clientX,
-					y: e.touches[0].clientY,
-				};
-			}
-		};
-
-		const handleTouchMove = (e: TouchEvent) => {
-			if (!isDraggingRef.current || e.touches.length !== 1) return;
-
-			const deltaX = e.touches[0].clientX - lastTouchRef.current.x;
-			const deltaY = e.touches[0].clientY - lastTouchRef.current.y;
-
-			rotationRef.current.y += deltaX * 0.01;
-			rotationRef.current.x += deltaY * 0.01;
-
-			rotationRef.current.x = Math.max(
-				-Math.PI / 2,
-				Math.min(Math.PI / 2, rotationRef.current.x)
-			);
-
-			lastTouchRef.current = {
-				x: e.touches[0].clientX,
-				y: e.touches[0].clientY,
-			};
-		};
-
-		const handleTouchEnd = () => {
-			isDraggingRef.current = false;
-		};
-
-		let lastDistance = 0;
-		const handleTouchMovePinch = (e: TouchEvent) => {
-			if (e.touches.length === 2) {
-				const dx = e.touches[0].clientX - e.touches[1].clientX;
-				const dy = e.touches[0].clientY - e.touches[1].clientY;
-				const distance = Math.sqrt(dx * dx + dy * dy);
-
-				if (lastDistance > 0) {
-					const delta = distance - lastDistance;
-					distanceRef.current = Math.max(
-						10,
-						Math.min(100, distanceRef.current - delta * 0.05)
-					);
-				}
-
-				lastDistance = distance;
-			}
-		};
-
-		const handleTouchEndPinch = () => {
-			lastDistance = 0;
-		};
-
-		canvas.addEventListener("touchstart", handleTouchStart);
-		canvas.addEventListener("touchmove", handleTouchMove);
-		canvas.addEventListener("touchmove", handleTouchMovePinch);
-		canvas.addEventListener("touchend", handleTouchEnd);
-		canvas.addEventListener("touchend", handleTouchEndPinch);
-
-		return () => {
-			canvas.removeEventListener("touchstart", handleTouchStart);
-			canvas.removeEventListener("touchmove", handleTouchMove);
-			canvas.removeEventListener("touchmove", handleTouchMovePinch);
-			canvas.removeEventListener("touchend", handleTouchEnd);
-			canvas.removeEventListener("touchend", handleTouchEndPinch);
-		};
-	}, [gl]);
+	const { camera } = useThree();
 
 	useFrame(() => {
 		const theta = rotationRef.current.y;
@@ -112,8 +42,80 @@ export default function ProteinVisualizer({
 	pdbData,
 	onAtomClick,
 }: ProteinVisualizerProps) {
+	const lastDistanceRef = useRef(0);
+	const lastTouchRef = useRef({ x: 0, y: 0 });
+	const hasMoved = useRef(false);
+
+	const panResponder = useRef(
+		PanResponder.create({
+			onStartShouldSetPanResponder: (evt) => {
+				// Immediately capture if it's a multi-touch (pinch)
+				return evt.nativeEvent.touches.length === 2;
+			},
+			onMoveShouldSetPanResponder: (evt, gestureState) => {
+				// Only capture single touch gestures if moved beyond threshold
+				// This allows taps to pass through to atom click handlers
+				const moved = Math.abs(gestureState.dx) > MOVEMENT_THRESHOLD || 
+				              Math.abs(gestureState.dy) > MOVEMENT_THRESHOLD;
+				const isMultiTouch = evt.nativeEvent.touches.length === 2;
+				return moved || isMultiTouch;
+			},
+			onPanResponderGrant: (evt) => {
+				lastDistanceRef.current = 0;
+				hasMoved.current = false;
+				const touch = evt.nativeEvent.touches[0];
+				if (touch) {
+					lastTouchRef.current = { x: touch.pageX, y: touch.pageY };
+				}
+			},
+			onPanResponderMove: (evt, gestureState) => {
+				const touches = evt.nativeEvent.touches;
+				hasMoved.current = true;
+
+				if (touches.length === 2) {
+					// Pinch to zoom
+					const dx = touches[0].pageX - touches[1].pageX;
+					const dy = touches[0].pageY - touches[1].pageY;
+					const distance = Math.sqrt(dx * dx + dy * dy);
+
+					if (lastDistanceRef.current > 0) {
+						const delta = distance - lastDistanceRef.current;
+						distanceRef.current = Math.max(
+							10,
+							Math.min(100, distanceRef.current - delta * ZOOM_SPEED)
+						);
+					}
+
+					lastDistanceRef.current = distance;
+				} else if (touches.length === 1) {
+					// Single touch to rotate - calculate delta from last position
+					const currentX = touches[0].pageX;
+					const currentY = touches[0].pageY;
+					
+					const deltaX = currentX - lastTouchRef.current.x;
+					const deltaY = currentY - lastTouchRef.current.y;
+
+					rotationRef.current.y += deltaX * ROTATION_SPEED;
+					rotationRef.current.x -= deltaY * ROTATION_SPEED; // Inverted for natural movement
+
+					// Clamp vertical rotation to prevent flipping
+					rotationRef.current.x = Math.max(
+						-Math.PI / 2,
+						Math.min(Math.PI / 2, rotationRef.current.x)
+					);
+
+					// Update last position
+					lastTouchRef.current = { x: currentX, y: currentY };
+				}
+			},
+			onPanResponderRelease: () => {
+				lastDistanceRef.current = 0;
+			},
+		})
+	).current;
+
 	return (
-		<View style={styles.container}>
+		<View style={styles.container} {...panResponder.panHandlers}>
 			<Canvas
 				camera={{ position: [0, 0, 30], fov: 50 }}
 				gl={{ antialias: true, alpha: true }}

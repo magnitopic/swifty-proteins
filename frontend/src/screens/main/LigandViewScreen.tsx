@@ -151,7 +151,7 @@ export default function LigandViewScreen({
 									: "text-gray-400"
 							} font-medium text-sm`}
 						>
-							Balls
+							Space-filling
 						</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
@@ -187,7 +187,7 @@ export default function LigandViewScreen({
 									: "text-gray-400"
 							} font-medium text-sm`}
 						>
-							Sticks
+							Ribbon
 						</Text>
 					</TouchableOpacity>
 				</View>
