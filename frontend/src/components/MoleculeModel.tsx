@@ -1,10 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { ThreeEvent } from "@react-three/fiber/native";
-import { Mesh, Vector3 } from "three";
 import {
 	PDBData,
 	Atom,
-	getAtomColor,
 	getCenterOfMass,
 } from "../utils/pdbParser";
 import AtomSphere from "./AtomSphere";
@@ -19,7 +17,7 @@ export default function MoleculeModel({
 	pdbData,
 	onAtomClick,
 }: MoleculeModelProps) {
-	const groupRef = useRef<any>();
+	const groupRef = useRef<any>(null);
 	const { atoms, bonds } = pdbData;
 
 	// Center the molecule
