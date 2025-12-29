@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Mesh } from "three";
 import { ThreeEvent } from "@react-three/fiber/native";
-import { Atom, getAtomColor } from "../utils/pdbParser";
+import { Atom, getAtomColor } from "../../utils/pdbParser";
 
 interface AtomSphereProps {
 	atom: Atom;

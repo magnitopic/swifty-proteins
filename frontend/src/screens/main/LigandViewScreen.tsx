@@ -6,7 +6,7 @@ import { StatusBar } from "expo-status-bar";
 import { TopBar } from "../../components/TopBar";
 import * as SecureStore from "expo-secure-store";
 import ProteinVisualizer from "../../components/ProteinVisualizer";
-import AtomTooltip from "../../components/AtomTooltip";
+import AtomTooltip from "../../components/balls_and_sticks_model/AtomTooltip";
 import { parsePDB, Atom, PDBData } from "../../utils/pdbParser";
 
 interface LigandViewScreenProps {

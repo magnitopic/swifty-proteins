@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, TouchableOpacity, Modal } from "react-native";
-import { Atom } from "../utils/pdbParser";
+import { Atom } from "../../utils/pdbParser";
 
 interface AtomTooltipProps {
 	atom: Atom | null;

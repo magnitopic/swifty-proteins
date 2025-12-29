@@ -4,19 +4,19 @@ import {
 	PDBData,
 	Atom,
 	getCenterOfMass,
-} from "../utils/pdbParser";
+} from "../../utils/pdbParser";
 import AtomSphere from "./AtomSphere";
 import BondCylinder from "./BondCylinder";
 
-interface MoleculeModelProps {
+interface BS_MoleculeModelProps {
 	pdbData: PDBData;
 	onAtomClick?: (atom: Atom) => void;
 }
 
-export default function MoleculeModel({
+export default function BS_MoleculeModel({
 	pdbData,
 	onAtomClick,
-}: MoleculeModelProps) {
+}: BS_MoleculeModelProps) {
 	const groupRef = useRef<any>(null);
 	const { atoms, bonds } = pdbData;
 

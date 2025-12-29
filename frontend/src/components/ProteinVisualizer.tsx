@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { View, StyleSheet, PanResponder } from "react-native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { PDBData, Atom } from "../utils/pdbParser";
-import MoleculeModel from "./MoleculeModel";
+import BS_MoleculeModel from "./balls_and_sticks_model/BS_MoleculeModel";
 
 interface ProteinVisualizerProps {
 	pdbData: PDBData;
@@ -55,8 +55,8 @@ export default function ProteinVisualizer({
 			onMoveShouldSetPanResponder: (evt, gestureState) => {
 				// Only capture single touch gestures if moved beyond threshold
 				// This allows taps to pass through to atom click handlers
-				const moved = Math.abs(gestureState.dx) > MOVEMENT_THRESHOLD || 
-				              Math.abs(gestureState.dy) > MOVEMENT_THRESHOLD;
+				const moved = Math.abs(gestureState.dx) > MOVEMENT_THRESHOLD ||
+					Math.abs(gestureState.dy) > MOVEMENT_THRESHOLD;
 				const isMultiTouch = evt.nativeEvent.touches.length === 2;
 				return moved || isMultiTouch;
 			},
@@ -91,7 +91,7 @@ export default function ProteinVisualizer({
 					// Single touch to rotate - calculate delta from last position
 					const currentX = touches[0].pageX;
 					const currentY = touches[0].pageY;
-					
+
 					const deltaX = currentX - lastTouchRef.current.x;
 					const deltaY = currentY - lastTouchRef.current.y;
 
@@ -124,7 +124,7 @@ export default function ProteinVisualizer({
 				<directionalLight position={[10, 10, 5]} intensity={1} />
 				<directionalLight position={[-10, -10, -5]} intensity={0.5} />
 				<InteractiveCamera />
-				<MoleculeModel pdbData={pdbData} onAtomClick={onAtomClick} />
+				<BS_MoleculeModel pdbData={pdbData} onAtomClick={onAtomClick} />
 			</Canvas>
 		</View>
 	);

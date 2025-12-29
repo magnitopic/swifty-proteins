@@ -1,6 +1,6 @@
 import React from "react";
 import { Vector3, Quaternion } from "three";
-import { Atom, getAtomColor } from "../utils/pdbParser";
+import { Atom, getAtomColor } from "../../utils/pdbParser";
 
 interface BondCylinderProps {
 	atom1: Atom;
