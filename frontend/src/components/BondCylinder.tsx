@@ -1,5 +1,5 @@
 import React from "react";
-import { Vector3 } from "three";
+import { Vector3, Quaternion } from "three";
 import { Atom, getAtomColor } from "../utils/pdbParser";
 
 interface BondCylinderProps {
@@ -10,13 +10,14 @@ interface BondCylinderProps {
 export default function BondCylinder({ atom1, atom2 }: BondCylinderProps) {
 	const start = new Vector3(atom1.x, atom1.y, atom1.z);
 	const end = new Vector3(atom2.x, atom2.y, atom2.z);
-	const midpoint = new Vector3().addVectors(start, end).multiplyScalar(0.5);
 	const distance = start.distanceTo(end);
 	const direction = new Vector3().subVectors(end, start).normalize();
 
 	// Calculate rotation to align cylinder with bond
-	const quaternion = new Vector3(0, 1, 0).cross(direction).normalize();
-	const angle = Math.acos(new Vector3(0, 1, 0).dot(direction));
+	const quaternion = new Quaternion().setFromUnitVectors(
+		new Vector3(0, 1, 0),
+		direction
+	);
 
 	const color1 = getAtomColor(atom1.element);
 	const color2 = getAtomColor(atom2.element);
@@ -41,7 +42,12 @@ export default function BondCylinder({ atom1, atom2 }: BondCylinderProps) {
 					firstHalfPosition.y,
 					firstHalfPosition.z,
 				]}
-				rotation={[0, 0, angle]}
+				quaternion={[
+					quaternion.x,
+					quaternion.y,
+					quaternion.z,
+					quaternion.w,
+				]}
 			>
 				<cylinderGeometry args={[0.1, 0.1, halfDistance, 8]} />
 				<meshStandardMaterial color={color1} />
@@ -54,7 +60,12 @@ export default function BondCylinder({ atom1, atom2 }: BondCylinderProps) {
 					secondHalfPosition.y,
 					secondHalfPosition.z,
 				]}
-				rotation={[0, 0, angle]}
+				quaternion={[
+					quaternion.x,
+					quaternion.y,
+					quaternion.z,
+					quaternion.w,
+				]}
 			>
 				<cylinderGeometry args={[0.1, 0.1, halfDistance, 8]} />
 				<meshStandardMaterial color={color2} />

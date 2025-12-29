@@ -1,9 +1,5 @@
 import React, { useRef } from "react";
 import { useThree, useFrame } from "@react-three/fiber/native";
-import {
-	PanGestureHandler,
-	PinchGestureHandler,
-} from "react-native-gesture-handler";
 import * as THREE from "three";
 
 export default function CameraControls() {

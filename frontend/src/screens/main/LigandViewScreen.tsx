@@ -120,20 +120,6 @@ export default function LigandViewScreen({
 					onClose={() => setShowTooltip(false)}
 				/>
 
-				{/* Share button */}
-				<View className="absolute bottom-20 right-6">
-					<TouchableOpacity
-						onPress={handleShare}
-						className="bg-primary border-2 border-primary-dark rounded-full p-3 shadow-lg"
-					>
-						<Ionicons
-							name="share-outline"
-							size={36}
-							color="white"
-						/>
-					</TouchableOpacity>
-				</View>
-
 				{/* Display Mode buttons */}
 				<View className="flex flex-row justify-center absolute bottom-40 gap-3 right-0 left-0">
 					<TouchableOpacity
@@ -191,6 +177,21 @@ export default function LigandViewScreen({
 						</Text>
 					</TouchableOpacity>
 				</View>
+
+				{/* Share button */}
+				<View className="absolute bottom-20 right-6">
+					<TouchableOpacity
+						onPress={handleShare}
+						className="bg-primary border-2 border-primary-dark rounded-full p-3 shadow-lg"
+					>
+						<Ionicons
+							name="share-outline"
+							size={36}
+							color="white"
+						/>
+					</TouchableOpacity>
+				</View>
+				
 			</SafeAreaView>
 		</View>
 	);
