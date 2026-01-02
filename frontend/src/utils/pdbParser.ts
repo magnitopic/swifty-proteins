@@ -117,7 +117,7 @@ export function parsePDB(pdbText: string): PDBData {
 	}
 
 	return { atoms, bonds };
-}
+};
 
 function inferBonds(atoms: Atom[], bonds: Bond[]): void {
 	const MAX_BOND_DISTANCE = 1.8; // Angstroms
@@ -140,11 +140,16 @@ function inferBonds(atoms: Atom[], bonds: Bond[]): void {
 			}
 		}
 	}
-}
+};
 
 export function getAtomColor(element: string): string {
 	return CPK_COLORS[element.toUpperCase()] || CPK_COLORS.DEFAULT;
-}
+};
+
+export const VDW_RADII: { [key: string]: number } = {
+	H: 1.20, C: 1.70, N: 1.55, O: 1.52, P: 1.80, S: 1.80, CL: 1.75,
+	DEFAULT: 1.50
+};
 
 export function getCenterOfMass(atoms: Atom[]): [number, number, number] {
 	if (atoms.length === 0) return [0, 0, 0];
@@ -159,4 +164,4 @@ export function getCenterOfMass(atoms: Atom[]): [number, number, number] {
 	}
 
 	return [sumX / atoms.length, sumY / atoms.length, sumZ / atoms.length];
-}
+};

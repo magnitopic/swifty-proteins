@@ -29,8 +29,7 @@ export default function LigandViewScreen({
 	const [selectedAtom, setSelectedAtom] = useState<Atom | null>(null);
 	const [showTooltip, setShowTooltip] = useState(false);
 	const [displayMode, setDisplayMode] = useState<
-		"space-filling" | "ribbon" | "ball-stick"
-	>("ball-stick");
+	"space-filling" | "ribbon" | "ball-stick">("ball-stick");
 
 	useEffect(() => {
 		getLoggedUser();
@@ -93,6 +92,7 @@ export default function LigandViewScreen({
 						<ProteinVisualizer
 							pdbData={parsedData}
 							onAtomClick={handleAtomClick}
+							displayMode={displayMode}
 						/>
 
 						{/* Info overlay */}

@@ -3,10 +3,13 @@ import { View, StyleSheet, PanResponder } from "react-native";
 import { Canvas, useFrame, useThree } from "@react-three/fiber/native";
 import { PDBData, Atom } from "../utils/pdbParser";
 import BS_MoleculeModel from "./balls_and_sticks_model/BS_MoleculeModel";
+import SF_MoleculeModel from "./space_filling_model/SF_MoleculeModel";
+import Ribbon_MoleculeModel from "./ribbon_model/Ribbon_MoleculeModel";
 
 interface ProteinVisualizerProps {
 	pdbData: PDBData;
 	onAtomClick?: (atom: Atom) => void;
+	displayMode: "space-filling" | "ribbon" | "ball-stick";
 }
 
 // Configuration for gesture sensitivity
@@ -41,6 +44,7 @@ function InteractiveCamera() {
 export default function ProteinVisualizer({
 	pdbData,
 	onAtomClick,
+	displayMode,
 }: ProteinVisualizerProps) {
 	const lastDistanceRef = useRef(0);
 	const lastTouchRef = useRef({ x: 0, y: 0 });
@@ -124,7 +128,9 @@ export default function ProteinVisualizer({
 				<directionalLight position={[10, 10, 5]} intensity={1} />
 				<directionalLight position={[-10, -10, -5]} intensity={0.5} />
 				<InteractiveCamera />
-				<BS_MoleculeModel pdbData={pdbData} onAtomClick={onAtomClick} />
+				{ displayMode === "ball-stick" && <BS_MoleculeModel pdbData={pdbData} onAtomClick={onAtomClick} /> }
+				{ displayMode === "space-filling" && <SF_MoleculeModel pdbData={pdbData} onAtomClick={onAtomClick} /> }
+				{ displayMode === "ribbon" && <Ribbon_MoleculeModel pdbData={pdbData} onAtomClick={onAtomClick} /> }
 			</Canvas>
 		</View>
 	);

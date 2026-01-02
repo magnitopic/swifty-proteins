@@ -21,7 +21,7 @@ export const authenticateJWT = (req: AuthRequest, res: Response, next: NextFunct
     // Verify the token
     jwt.verify(token, config.jwt.accessSecret, (err: any, user: any) => {
         if (err) {
-            return res.status(403).json({ message: 'Token is invalid or expired' });
+            return res.status(401).json({ message: 'Token is invalid or expired' });
         }
 
         // Save user data in request for controller to use
