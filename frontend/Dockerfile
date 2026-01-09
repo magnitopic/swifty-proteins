@@ -17,5 +17,5 @@ EXPOSE 19000
 EXPOSE 19001
 EXPOSE 19006
 
-# Remove CI mode to allow proper tunnel setup
+# Start Expo in LAN mode (we handle backend tunnel separately)
 CMD ["npx", "expo", "start", "--tunnel"]

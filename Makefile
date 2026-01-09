@@ -1,14 +1,27 @@
-.PHONY: all build up down restart logs logs-f clean re re-backend re-frontend re-db install-backend install-frontend attach update-ip show-users
+.PHONY: all build up down restart logs logs-f clean re re-backend re-frontend re-db install-backend install-frontend attach update-ip show-users mobile get-tunnel-url update-tunnel-url start
 
-all:	up
+# Default command - Smart startup
+all:	start
+
+# Traditional up command (for scripts/automation)
+up: update-ip
+	@docker compose up -d --build postgres backend
+	@echo "Waiting for main services to start..."
+	@sleep 8
+	@docker compose up -d tunnel
+	@echo "Waiting for tunnel to establish connection..."
+	@sleep 12
+	@echo "Detecting tunnel URL..."
+	@$(MAKE) update-tunnel-url || true
+	@docker compose up -d frontend
+	@sleep 5
+	@echo ""
+	@echo "Services started successfully"
+	@echo "View QR code: make logs"
+	@docker compose logs frontend --tail 20
 
 build:
 	docker compose build
-
-up: update-ip
-	docker compose up -d --build
-	@sleep 5
-	docker compose logs frontend
 
 update-ip:
 	@echo "Detected IP: $$(ip route get 1 | awk '{print $$7;exit}')"
@@ -52,7 +65,7 @@ re-db:
 	docker volume rm swifty-proteins_postgres_data || true
 	docker compose up -d --build postgres
 	@sleep 5
-	@echo "✅ PostgreSQL database rebuilt successfully!"
+	@echo "PostgreSQL database rebuilt successfully"
 	docker compose restart backend
 
 restart:
@@ -72,4 +85,55 @@ copy-node_modules:
 
 show-users:
 	docker compose exec postgres psql -U postgres -d swifty_proteins -c "SELECT * FROM users;"
+
+# ============================================
+# Mobile Setup Commands
+# ============================================
+
+get-tunnel-url:
+	@./get-tunnel-url.sh
+
+update-tunnel-url:
+	@echo "Obtaining public tunnel URL..."
+	@TUNNEL_URL=$$(./get-tunnel-url.sh | tail -1); \
+	if [ -z "$$TUNNEL_URL" ]; then \
+		echo "ERROR: Could not obtain tunnel URL"; \
+		echo "Is the tunnel container running?"; \
+		echo "Execute: docker compose logs tunnel"; \
+		exit 1; \
+	fi; \
+	echo "URL found: $$TUNNEL_URL"; \
+	if [ "$$(uname)" = "Darwin" ]; then \
+		sed -i '' "s|EXPO_PUBLIC_BACKEND_URL=.*|EXPO_PUBLIC_BACKEND_URL=$$TUNNEL_URL|g" .env; \
+	else \
+		sed -i "s|EXPO_PUBLIC_BACKEND_URL=.*|EXPO_PUBLIC_BACKEND_URL=$$TUNNEL_URL|g" .env; \
+	fi; \
+	echo ".env updated with tunnel URL"
+
+mobile:
+	@echo "Starting services with automatic tunnel..."
+	@docker compose up -d --build postgres backend
+	@echo "Waiting for main services to start..."
+	@sleep 8
+	@docker compose up -d tunnel
+	@echo "Waiting for tunnel to establish connection..."
+	@sleep 12
+	@$(MAKE) update-tunnel-url
+	@echo ""
+	@echo "Starting frontend with new configuration..."
+	@docker compose up -d --build frontend
+	@sleep 8
+	@echo ""
+	@echo "All ready for mobile on different network"
+	@echo ""
+	@echo "Scan QR code with Expo Go:"
+	@docker compose logs frontend --tail 40 | grep -A 30 "Metro waiting" || docker compose logs frontend --tail 20
+	@echo ""
+	@echo "View tunnel logs:"
+	@echo "   docker logs tunnel -f"
+	@echo ""
+	@TUNNEL_URL=$$(cat .env | grep EXPO_PUBLIC_BACKEND_URL | cut -d= -f2); \
+	echo "Public backend: $$TUNNEL_URL"
+	@echo ""
+	@echo "NOTE: If tunnel URL changes, execute: make update-tunnel-url && make re-frontend"
 
