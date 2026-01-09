@@ -8,7 +8,7 @@ export const refreshAccessToken = async (request: RefreshTokenRequest): Promise<
 
     // Verify refresh token
     try {
-        const decoded = jwt.verify(refreshToken, config.jwt.refreshSecret) as { _id: string; username: string };
+        const decoded = jwt.verify(refreshToken, config.jwt.refreshSecret) as { id: string; username: string };
 
         // Find user with this refresh token in database
         const user = await findUserByRefreshToken(refreshToken);
@@ -18,7 +18,7 @@ export const refreshAccessToken = async (request: RefreshTokenRequest): Promise<
         }
 
         // Verify token payload matches user
-        if (user.id !== decoded._id) {
+        if (user.id !== decoded.id) {
             throw new Error('Token user mismatch');
         }
 
