@@ -1,4 +1,4 @@
-.PHONY: all build up down restart logs logs-f clean re qr re-backend re-frontend re-db install-backend install-frontend attach update-ip show-users
+.PHONY: all build up down restart logs logs-f clean re re-backend re-frontend re-db install-backend install-frontend attach update-ip show-users
 
 all:	up
 
@@ -7,6 +7,7 @@ build:
 
 up: update-ip
 	docker compose up -d --build
+	@sleep 5
 	docker compose logs frontend
 
 update-ip:
