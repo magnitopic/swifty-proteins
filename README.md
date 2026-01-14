@@ -14,6 +14,18 @@ Swifty Proteins is a molecular visualization application that allows users to ex
 - 📱 Optional biometric authentication (Face ID / Touch ID / Fingerprint)
 - 🛡️ Secure credential storage with Expo SecureStore
 - 🔄 Session persistence with refresh tokens
+- 
+![Screenshot_2026-01-14-17-02-18-65_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/91d419f8-1fdd-4caa-b813-58ebfa5a5367)
+![Screenshot_2026-01-14-17-02-34-63_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/ccbaa3c2-7960-43ae-abf3-b46beac61d24)
+
+### Ligand Management
+- 📝 Complete list of available ligands (loaded from local file)
+- 🔍 Real-time ligand search
+- 📥 Automatic PDB structure download from RCSB
+- 📤 Share molecular structures with other users
+
+![Screenshot_2026-01-14-17-03-12-19_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/a05dffb5-0570-427b-a26c-c23bf72136a1)
+
 
 ### 3D Molecule Visualization
 - 🎨 **Three visualization modes:**
@@ -26,11 +38,11 @@ Swifty Proteins is a molecular visualization application that allows users to ex
 - 📊 Tooltip with atomic information (symbol, name, coordinates)
 - 🎨 Standard CPK color code for chemical elements
 
-### Ligand Management
-- 📝 Complete list of available ligands (loaded from local file)
-- 🔍 Real-time ligand search
-- 📥 Automatic PDB structure download from RCSB
-- 📤 Share molecular structures with other users
+![Screenshot_2026-01-14-17-04-08-95_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/56796c67-bdb2-4703-bfec-55d1a23c2bb2)
+![Screenshot_2026-01-14-17-03-57-51_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/839bb432-57d8-4ff0-ba90-c58828e79f0b)
+![Screenshot_2026-01-14-17-03-43-93_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/3e151f72-9080-4f51-ba0b-4210e1ce6839)
+![Screenshot_2026-01-14-17-03-31-30_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/69bbe35e-724d-485a-973f-506674219dbd)
+
 
 ### Technical Architecture
 - 🐳 Fully Dockerized (Frontend, Backend, PostgreSQL)
