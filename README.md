@@ -14,9 +14,9 @@ Swifty Proteins is a molecular visualization application that allows users to ex
 - 📱 Optional biometric authentication (Face ID / Touch ID / Fingerprint)
 - 🛡️ Secure credential storage with Expo SecureStore
 - 🔄 Session persistence with refresh tokens
-- 
-![Screenshot_2026-01-14-17-02-18-65_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/91d419f8-1fdd-4caa-b813-58ebfa5a5367)
-![Screenshot_2026-01-14-17-02-34-63_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/ccbaa3c2-7960-43ae-abf3-b46beac61d24)
+
+<img width="300" alt="login view" src="https://github.com/user-attachments/assets/875bff81-3afb-4907-9171-1d66df1a553c" />
+<img width="300" alt="fingerprint enable" src="https://github.com/user-attachments/assets/73417ad4-a565-4189-9d20-a1f11404fb73" />
 
 ### Ligand Management
 - 📝 Complete list of available ligands (loaded from local file)
@@ -24,8 +24,7 @@ Swifty Proteins is a molecular visualization application that allows users to ex
 - 📥 Automatic PDB structure download from RCSB
 - 📤 Share molecular structures with other users
 
-![Screenshot_2026-01-14-17-03-12-19_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/a05dffb5-0570-427b-a26c-c23bf72136a1)
-
+<img width="300" alt="ligands list" src="https://github.com/user-attachments/assets/ab409215-9a37-42b8-be70-d7ff4a6b936e" />
 
 ### 3D Molecule Visualization
 - 🎨 **Three visualization modes:**
@@ -38,11 +37,14 @@ Swifty Proteins is a molecular visualization application that allows users to ex
 - 📊 Tooltip with atomic information (symbol, name, coordinates)
 - 🎨 Standard CPK color code for chemical elements
 
-![Screenshot_2026-01-14-17-04-08-95_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/56796c67-bdb2-4703-bfec-55d1a23c2bb2)
-![Screenshot_2026-01-14-17-03-57-51_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/839bb432-57d8-4ff0-ba90-c58828e79f0b)
-![Screenshot_2026-01-14-17-03-43-93_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/3e151f72-9080-4f51-ba0b-4210e1ce6839)
-![Screenshot_2026-01-14-17-03-31-30_f73b71075b1de7323614b647fe394240](https://github.com/user-attachments/assets/69bbe35e-724d-485a-973f-506674219dbd)
-
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+  <img src="https://github.com/user-attachments/assets/8866a51a-74cf-442e-9326-5e7996fed80e" width="300" style="max-width: 100%;" alt="3D render">
+  <img src="https://github.com/user-attachments/assets/1866ee2e-1e1b-44e7-8726-27b9aab0036b" width="300" style="max-width: 100%;" alt="3D render">
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+  <img src="https://github.com/user-attachments/assets/ce9d5efe-f6ab-405c-874b-e8c48e3be71b" width="300" style="max-width: 100%;" alt="3D render">
+  <img src="https://github.com/user-attachments/assets/3b452603-5eaa-44d6-b5c8-67658f057d01" width="300" style="max-width: 100%;" alt="Atom tooltip">
+</div>
 
 ### Technical Architecture
 - 🐳 Fully Dockerized (Frontend, Backend, PostgreSQL)
