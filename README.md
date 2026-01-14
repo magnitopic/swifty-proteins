@@ -37,13 +37,14 @@ Swifty Proteins is a molecular visualization application that allows users to ex
 - 📊 Tooltip with atomic information (symbol, name, coordinates)
 - 🎨 Standard CPK color code for chemical elements
 
+
 <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-  <img src="https://github.com/user-attachments/assets/8866a51a-74cf-442e-9326-5e7996fed80e" width="300" style="max-width: 100%;" alt="3D render">
-  <img src="https://github.com/user-attachments/assets/1866ee2e-1e1b-44e7-8726-27b9aab0036b" width="300" style="max-width: 100%;" alt="3D render">
+   <img src="https://github.com/user-attachments/assets/3b452603-5eaa-44d6-b5c8-67658f057d01" width="300" style="max-width: 100%;" alt="3D render">
+  <img src="https://github.com/user-attachments/assets/ce9d5efe-f6ab-405c-874b-e8c48e3be71b" width="300" style="max-width: 100%;" alt="3D render">
 </div>
 <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-  <img src="https://github.com/user-attachments/assets/ce9d5efe-f6ab-405c-874b-e8c48e3be71b" width="300" style="max-width: 100%;" alt="3D render">
-  <img src="https://github.com/user-attachments/assets/3b452603-5eaa-44d6-b5c8-67658f057d01" width="300" style="max-width: 100%;" alt="Atom tooltip">
+  <img src="https://github.com/user-attachments/assets/1866ee2e-1e1b-44e7-8726-27b9aab0036b" width="300" style="max-width: 100%;" alt="3D render">
+  <img src="https://github.com/user-attachments/assets/8866a51a-74cf-442e-9326-5e7996fed80e" width="300" style="max-width: 100%;" alt="atom tooltip">
 </div>
 
 ### Technical Architecture
